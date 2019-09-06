@@ -10,12 +10,12 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "first_air_date",
-        "title"
+        "name"
 })
 
 public class TVShow implements Parcelable {
-    @JsonProperty("title")
-    private String title;
+    @JsonProperty("name")
+    private String name;
     @JsonProperty("popularity")
     private double popularity;
     @JsonProperty("vote_average")
@@ -29,14 +29,14 @@ public class TVShow implements Parcelable {
     @JsonProperty("genre_ids")
     private int[] genre_ids;
 
-    @JsonProperty("title")
-    public String getTitle() {
-        return title;
+    @JsonProperty("name")
+    public String getName() {
+        return name;
     }
 
-    @JsonProperty("title")
-    public void setTitle(String title) {
-        this.title = title;
+    @JsonProperty("name")
+    public void setName(String name) {
+        this.name = name;
     }
 
     @JsonProperty("popularity")
@@ -106,7 +106,7 @@ public class TVShow implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.title);
+        dest.writeString(this.name);
         dest.writeDouble(this.popularity);
         dest.writeDouble(this.vote_average);
         dest.writeString(this.overview);
@@ -119,7 +119,7 @@ public class TVShow implements Parcelable {
     }
 
     protected TVShow(Parcel in) {
-        this.title = in.readString();
+        this.name = in.readString();
         this.popularity = in.readDouble();
         this.vote_average = in.readDouble();
         this.overview = in.readString();

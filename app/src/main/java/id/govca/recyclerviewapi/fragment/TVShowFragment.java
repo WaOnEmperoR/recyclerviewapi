@@ -5,12 +5,26 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import id.govca.recyclerviewapi.R;
+import id.govca.recyclerviewapi.adapter.ListMovieAdapter;
+import id.govca.recyclerviewapi.adapter.ListTvShowAdapter;
+import id.govca.recyclerviewapi.pojo.MovieList;
+import id.govca.recyclerviewapi.pojo.TVShowList;
+import id.govca.recyclerviewapi.rest.ApiClient;
+import id.govca.recyclerviewapi.rest.ApiInterface;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,6 +43,13 @@ public class TVShowFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private CompositeDisposable disposable = new CompositeDisposable();
+
+    private final String TAG = this.getClass().getSimpleName();
+    private View mProgressView;
+
+    private RecyclerView rvTvShow;
 
     private OnFragmentInteractionListener mListener;
 
@@ -67,7 +88,15 @@ public class TVShowFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_tvshow, container, false);
+        View view = inflater.inflate(R.layout.fragment_tvshow, container, false);
+        mProgressView = view.findViewById(R.id.progressBarTvShow);
+
+        rvTvShow = view.findViewById(R.id.recyclerView_tv_show);
+        rvTvShow.setHasFixedSize(true);
+
+        ObserveTVShow();
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -108,4 +137,47 @@ public class TVShowFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
+    private Observable<TVShowList> getTVShowListObs(){
+        final ApiInterface mApiService = ApiClient.getClient().create(ApiInterface.class);
+
+        return mApiService.RxGetTVShowList()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    private void ObserveTVShow(){
+        mProgressView.setVisibility(View.VISIBLE);
+
+        Observable<TVShowList> tvShowListObservable = getTVShowListObs();
+
+        disposable.add(
+                tvShowListObservable
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeWith(new DisposableObserver<TVShowList>() {
+                            @Override
+                            public void onNext(TVShowList tvShowList) {
+                                rvTvShow.setLayoutManager(new LinearLayoutManager(getContext()));
+                                ListTvShowAdapter listTvShowAdapter = new ListTvShowAdapter(tvShowList.getTvShowArrayList());
+                                rvTvShow.setAdapter(listTvShowAdapter);
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                Log.e(TAG, "Observable error : " + e.getMessage());
+                            }
+
+                            @Override
+                            public void onComplete() {
+                                mProgressView.setVisibility(View.GONE);
+
+                                Log.d(TAG, "onComplete from Test Observable");
+
+                                this.dispose();
+                            }
+                        })
+        );
+    }
+
 }
