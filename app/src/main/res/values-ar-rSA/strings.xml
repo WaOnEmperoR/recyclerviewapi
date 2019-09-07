@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">RecyclerViewAPI</string>
+    <string name="change_language_settings">غير اللغة</string>
+    <string name="title_movie">فيلم</string>
+    <string name="title_tv_show">برنامج تلفزيوني</string>
+    <string name="movie_detail">التفاصيل</string>
+    <string name="movie_director">مدير</string>
+    <string name="movie_name">اسم</string>
+    <string name="movie_poster">الملصق</string>
+    <string name="movie_prod_house">بيت الانتاج</string>
+    <string name="movie_synopsis">ملخص</string>
+    <string name="movie_type">نوع</string>
+    <string name="movie_year">يوم الاصدار</string>
+    <string name="title_detail">معلومات</string>
+    <string name="movie_rating">تقييم</string>
+    <string name="title_genres">نوع أدبي</string>
+    <string name="title_homepage">الصفحة الرئيسية</string>
+</resources>

@@ -54,12 +54,12 @@ public class ListMovieAdapter extends RecyclerView.Adapter<ListMovieAdapter.List
         holder.tv_year.setText(movie.getRelease_date());
         holder.tv_rating.setText(String.valueOf(movie.getVote_average()));
 
-//        holder.itemView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                onItemClickCallback.onItemClicked(listMovie.get(holder.getAdapterPosition()));
-//            }
-//        });
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onItemClickCallback.onItemClicked(listMovie.get(holder.getAdapterPosition()));
+            }
+        });
     }
 
     @Override

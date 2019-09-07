@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">RecyclerViewAPI</string>
+    <string name="change_language_settings">Ganti Bahasa</string>
+    <string name="title_movie">Film</string>
+    <string name="title_tv_show">Acara TV</string>
+    <string name="movie_year">Tanggal Rilis</string>
+    <string name="movie_type">Jenis</string>
+    <string name="movie_synopsis">Sinopsis</string>
+    <string name="movie_prod_house">Rumah Produksi</string>
+    <string name="movie_poster">Poster</string>
+    <string name="movie_name">Nama</string>
+    <string name="movie_director">Sutradara</string>
+    <string name="movie_detail">Detail Film</string>
+    <string name="movie_rating">Rating</string>
+    <string name="title_detail">Informasi</string>
+    <string name="title_homepage">Halaman Web</string>
+    <string name="title_genres">Aliran</string>
+</resources>

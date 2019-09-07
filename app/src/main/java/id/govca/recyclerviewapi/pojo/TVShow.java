@@ -28,6 +28,8 @@ public class TVShow implements Parcelable {
     private String poster_path;
     @JsonProperty("genre_ids")
     private int[] genre_ids;
+    @JsonProperty("id")
+    private int id;
 
     @JsonProperty("name")
     public String getName() {
@@ -113,6 +115,7 @@ public class TVShow implements Parcelable {
         dest.writeString(this.first_air_date);
         dest.writeString(this.poster_path);
         dest.writeIntArray(this.genre_ids);
+        dest.writeInt(this.id);
     }
 
     public TVShow() {
@@ -126,6 +129,7 @@ public class TVShow implements Parcelable {
         this.first_air_date = in.readString();
         this.poster_path = in.readString();
         this.genre_ids = in.createIntArray();
+        this.id = in.readInt();
     }
 
     public static final Parcelable.Creator<TVShow> CREATOR = new Parcelable.Creator<TVShow>() {
@@ -139,4 +143,14 @@ public class TVShow implements Parcelable {
             return new TVShow[size];
         }
     };
+
+    @JsonProperty("id")
+    public int getId() {
+        return id;
+    }
+
+    @JsonProperty("id")
+    public void setId(int id) {
+        this.id = id;
+    }
 }

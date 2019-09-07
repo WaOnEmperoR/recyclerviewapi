@@ -29,6 +29,9 @@ public class Movie implements Parcelable {
     @SerializedName("genre_ids")
     @Expose
     private int[] genre_ids;
+    @SerializedName("id")
+    @Expose
+    private int id;
 
     public String getTitle() {
         return title;
@@ -100,6 +103,7 @@ public class Movie implements Parcelable {
         dest.writeString(this.release_date);
         dest.writeString(this.poster_path);
         dest.writeIntArray(this.genre_ids);
+        dest.writeInt(this.id);
     }
 
     public Movie() {
@@ -113,6 +117,7 @@ public class Movie implements Parcelable {
         this.release_date = in.readString();
         this.poster_path = in.readString();
         this.genre_ids = in.createIntArray();
+        this.id = in.readInt();
     }
 
     public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
@@ -126,4 +131,12 @@ public class Movie implements Parcelable {
             return new Movie[size];
         }
     };
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 }

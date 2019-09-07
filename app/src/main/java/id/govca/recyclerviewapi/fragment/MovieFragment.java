@@ -1,6 +1,7 @@
 package id.govca.recyclerviewapi.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -17,6 +18,7 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
+import id.govca.recyclerviewapi.DetailActivity;
 import id.govca.recyclerviewapi.R;
 import id.govca.recyclerviewapi.adapter.ListMovieAdapter;
 import id.govca.recyclerviewapi.helper.Constants;
@@ -177,6 +179,16 @@ public class MovieFragment extends Fragment {
                             rvMovies.setLayoutManager(new LinearLayoutManager(getContext()));
                             ListMovieAdapter listMovieAdapter = new ListMovieAdapter(movieList.getMovieArrayList());
                             rvMovies.setAdapter(listMovieAdapter);
+
+                            listMovieAdapter.setOnItemClickCallback(new ListMovieAdapter.OnItemClickCallback() {
+                                @Override
+                                public void onItemClicked(Movie data) {
+                                    Intent intent = new Intent(getActivity(), DetailActivity.class);
+                                    intent.putExtra("Movie_ID", data.getId());
+                                    intent.putExtra("Category", "Movie");
+                                    startActivity(intent);
+                                }
+                            });
                         }
 
                         @Override
