@@ -21,8 +21,8 @@ import id.govca.recyclerviewapi.pojo.TVShow;
 public class ListTvShowAdapter extends RecyclerView.Adapter<ListTvShowAdapter.ListViewHolder>{
     private ArrayList<TVShow> listTvShow;
 
-    private ListMovieAdapter.OnItemClickCallback onItemClickCallback;
-    public void setOnItemClickCallback(ListMovieAdapter.OnItemClickCallback onItemClickCallback) {
+    private ListTvShowAdapter.OnItemClickCallback onItemClickCallback;
+    public void setOnItemClickCallback(ListTvShowAdapter.OnItemClickCallback onItemClickCallback) {
         this.onItemClickCallback = onItemClickCallback;
     }
 
@@ -34,7 +34,7 @@ public class ListTvShowAdapter extends RecyclerView.Adapter<ListTvShowAdapter.Li
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ListViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ListTvShowAdapter.ListViewHolder holder, int position) {
         TVShow tvShow = listTvShow.get(position);
 
         Glide
@@ -45,6 +45,13 @@ public class ListTvShowAdapter extends RecyclerView.Adapter<ListTvShowAdapter.Li
         holder.tv_movie_name.setText(tvShow.getName());
         holder.tv_year.setText(tvShow.getFirst_air_date());
         holder.tv_rating.setText(String.valueOf(tvShow.getVote_average()));
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onItemClickCallback.onItemClicked(listTvShow.get(holder.getAdapterPosition()));
+            }
+        });
     }
 
     @Override

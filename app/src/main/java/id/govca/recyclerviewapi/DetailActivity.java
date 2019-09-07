@@ -2,13 +2,18 @@ package id.govca.recyclerviewapi;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.pranavpandey.android.dynamic.toasts.DynamicToast;
 
 import java.util.Locale;
 import java.util.StringJoiner;
@@ -17,6 +22,8 @@ import id.govca.recyclerviewapi.helper.Constants;
 import id.govca.recyclerviewapi.pojo.Genre;
 import id.govca.recyclerviewapi.pojo.MovieDetail;
 import id.govca.recyclerviewapi.pojo.MovieList;
+import id.govca.recyclerviewapi.pojo.TVShow;
+import id.govca.recyclerviewapi.pojo.TVShowDetail;
 import id.govca.recyclerviewapi.rest.ApiClient;
 import id.govca.recyclerviewapi.rest.ApiInterface;
 import io.reactivex.Observable;
@@ -31,9 +38,9 @@ public class DetailActivity extends AppCompatActivity {
 
     private final String TAG = this.getClass().getSimpleName();
     private View mProgressView;
+    private View mScrollView;
 
-    private int idThings;
-    private String category;
+    private int idThings, category;
     private TextView tv_name, tv_rating, tv_genres, tv_homepage, tv_year, tv_synopsis;
     private ImageView imgView_poster;
 
@@ -42,17 +49,15 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        Locale current = getResources().getConfiguration().locale;
-
         Bundle b = getIntent().getExtras();
-        Log.d(TAG, "Movie ID : " + String.valueOf(b.getInt("Movie_ID")));
-        Log.d(TAG, "Category : " + b.getString("Category"));
-
         idThings = b.getInt("Movie_ID");
-        category = b.getString("Category");
+        category = b.getInt("Category");
 
-        Log.d(TAG, current.getISO3Language());
-        Log.d(TAG, current.getISO3Country());
+        mProgressView = findViewById(R.id.progressBarDetail);
+        mScrollView = findViewById(R.id.scrollViewDetail);
+
+        mProgressView.setVisibility(View.VISIBLE);
+        mScrollView.setVisibility(View.GONE);
 
         tv_name = findViewById(R.id.tv_movie_name);
         tv_rating = findViewById(R.id.tv_movie_rating_content);
@@ -62,20 +67,46 @@ public class DetailActivity extends AppCompatActivity {
         tv_synopsis = findViewById(R.id.tv_movie_synopsis_content);
         imgView_poster = findViewById(R.id.imgView_poster);
 
-        ObserveMovieDetail();
+
+        if (category == 0)
+        {
+            ObserveMovieDetail();
+        }
+        else
+        {
+            ObserveTvShowDetail();
+        }
+
     }
 
-    private Observable<MovieDetail> getMovieDetailObs(){
+    private Observable<MovieDetail> getMovieDetailObs(String language){
         final ApiInterface mApiService = ApiClient.getClient().create(ApiInterface.class);
 
-        return mApiService.RxMovieDetails(idThings, Constants.API_KEY, "en-US")
+        return mApiService.RxMovieDetails(idThings, Constants.API_KEY, language)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    private Observable<TVShowDetail> getTvShowDetailObs(String language){
+        final ApiInterface mApiService = ApiClient.getClient().create(ApiInterface.class);
+
+        return mApiService.RxTVShowDetails(idThings, Constants.API_KEY, language)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     private void ObserveMovieDetail()
     {
-        Observable<MovieDetail> movieDetailObservable = getMovieDetailObs();
+        Locale current = getResources().getConfiguration().locale;
+
+        String param_lang = current.getCountry() + "-" + current.getLanguage();
+
+        if (param_lang.equals("in-ID"))
+        {
+            param_lang = "id-ID";
+        }
+
+        Observable<MovieDetail> movieDetailObservable = getMovieDetailObs(param_lang);
 
         disposable.add(
                 movieDetailObservable
@@ -84,17 +115,12 @@ public class DetailActivity extends AppCompatActivity {
                 .subscribeWith(new DisposableObserver<MovieDetail>() {
                     @Override
                     public void onNext(MovieDetail movieDetail) {
-//                        Log.d(TAG, movieDetail.getHomepage());
-//                        Log.d(TAG, movieDetail.getOriginal_title());
-//                        Log.d(TAG, movieDetail.getOverview());
-
                         StringJoiner joiner = new StringJoiner(", ");
                         Genre[] genres = movieDetail.getGenres();
                         for (int i=0; i<genres.length; i++)
                         {
                             joiner.add(genres[i].getName());
                         }
-                        Log.d(TAG, joiner.toString());
 
                         tv_name.setText(movieDetail.getOriginal_title());
                         tv_genres.setText(joiner.toString());
@@ -112,15 +138,94 @@ public class DetailActivity extends AppCompatActivity {
                     @Override
                     public void onError(Throwable e) {
                         Log.e(TAG, e.getMessage());
+                        DynamicToast.makeError(getBaseContext(), e.getMessage(), 5).show();
                     }
 
                     @Override
                     public void onComplete() {
+                        mProgressView.setVisibility(View.GONE);
+                        mScrollView.setVisibility(View.VISIBLE);
+
                         Log.d(TAG, "onComplete from RXJava");
+                        DynamicToast.makeSuccess(getBaseContext(), "Finished Loading Data", 3).show();
                         this.dispose();
                     }
                 })
 
         );
+    }
+
+    private void ObserveTvShowDetail()
+    {
+        Locale current = getResources().getConfiguration().locale;
+
+        String param_lang = current.getLanguage() + "-" + current.getCountry();
+
+        if (param_lang.equals("in-ID"))
+        {
+            param_lang = "id-ID";
+        }
+
+        Observable<TVShowDetail> tvShowDetailObservable = getTvShowDetailObs(param_lang);
+
+        disposable.add(
+                tvShowDetailObservable
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeWith(new DisposableObserver<TVShowDetail>() {
+                            @Override
+                            public void onNext(TVShowDetail tvShowDetail) {
+                                StringJoiner joiner = new StringJoiner(", ");
+                                Genre[] genres = tvShowDetail.getGenres();
+                                for (int i=0; i<genres.length; i++)
+                                {
+                                    joiner.add(genres[i].getName());
+                                }
+
+                                tv_name.setText(tvShowDetail.getName());
+                                tv_genres.setText(joiner.toString());
+                                tv_homepage.setText(tvShowDetail.getHomepage());
+                                tv_synopsis.setText(tvShowDetail.getOverview());
+                                tv_year.setText(tvShowDetail.getFirst_air_date());
+                                tv_rating.setText(String.valueOf(tvShowDetail.getVote_average()));
+
+                                Glide
+                                        .with(getBaseContext())
+                                        .load(Constants.IMAGE_ROOT_LARGE + tvShowDetail.getPoster_path())
+                                        .into(imgView_poster);
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                Log.e(TAG, e.getMessage());
+                                DynamicToast.makeError(getBaseContext(), e.getMessage(), 5).show();
+                            }
+
+                            @Override
+                            public void onComplete() {
+                                mProgressView.setVisibility(View.GONE);
+                                mScrollView.setVisibility(View.VISIBLE);
+
+                                Log.d(TAG, "onComplete from RXJava");
+                                DynamicToast.makeSuccess(getBaseContext(), "Finished Loading Data", 3).show();
+                                this.dispose();
+                            }
+                        })
+        );
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_change_settings){
+            Intent mIntent = new Intent(Settings.ACTION_LOCALE_SETTINGS);
+            startActivity(mIntent);
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

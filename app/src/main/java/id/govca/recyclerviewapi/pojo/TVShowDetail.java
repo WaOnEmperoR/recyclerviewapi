@@ -9,7 +9,7 @@ public class TVShowDetail {
     private int id;
     @SerializedName("genres")
     @Expose
-    private int[] genres;
+    private Genre[] genres;
     @SerializedName("homepage")
     @Expose
     private String homepage;
@@ -25,6 +25,9 @@ public class TVShowDetail {
     @SerializedName("overview")
     @Expose
     private String overview;
+    @SerializedName("poster_path")
+    @Expose
+    private String poster_path;
 
     public int getId() {
         return id;
@@ -32,14 +35,6 @@ public class TVShowDetail {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public int[] getGenres() {
-        return genres;
-    }
-
-    public void setGenres(int[] genres) {
-        this.genres = genres;
     }
 
     public String getHomepage() {
@@ -80,5 +75,21 @@ public class TVShowDetail {
 
     public void setOverview(String overview) {
         this.overview = overview;
+    }
+
+    public Genre[] getGenres() {
+        return genres;
+    }
+
+    public void setGenres(Genre[] genres) {
+        this.genres = genres;
+    }
+
+    public String getPoster_path() {
+        return poster_path;
+    }
+
+    public void setPoster_path(String poster_path) {
+        this.poster_path = poster_path;
     }
 }

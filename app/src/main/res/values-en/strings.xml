@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">RecyclerViewAPI</string>
+    <string name="change_language_settings">Change Language</string>
+    <string name="movie_detail">Movie Detail</string>
+    <string name="movie_director">Director</string>
+    <string name="movie_name">Name</string>
+    <string name="movie_poster">Poster</string>
+    <string name="movie_prod_house">Production House</string>
+    <string name="movie_rating">Rating</string>
+    <string name="movie_synopsis">Synopsis</string>
+    <string name="movie_type">Type</string>
+    <string name="movie_year">Release Date</string>
+    <string name="title_detail">Movie/TV Show Information</string>
+    <string name="title_genres">Genres</string>
+    <string name="title_homepage">Homepage</string>
+    <string name="title_movie">Movie</string>
+    <string name="title_tv_show">TV Show</string>
+</resources>

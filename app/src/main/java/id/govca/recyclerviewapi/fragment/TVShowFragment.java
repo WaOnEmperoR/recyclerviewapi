@@ -1,6 +1,7 @@
 package id.govca.recyclerviewapi.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -13,10 +14,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.Locale;
+
+import id.govca.recyclerviewapi.DetailActivity;
 import id.govca.recyclerviewapi.R;
 import id.govca.recyclerviewapi.adapter.ListMovieAdapter;
 import id.govca.recyclerviewapi.adapter.ListTvShowAdapter;
+import id.govca.recyclerviewapi.helper.Constants;
+import id.govca.recyclerviewapi.pojo.Movie;
 import id.govca.recyclerviewapi.pojo.MovieList;
+import id.govca.recyclerviewapi.pojo.TVShow;
 import id.govca.recyclerviewapi.pojo.TVShowList;
 import id.govca.recyclerviewapi.rest.ApiClient;
 import id.govca.recyclerviewapi.rest.ApiInterface;
@@ -141,7 +148,15 @@ public class TVShowFragment extends Fragment {
     private Observable<TVShowList> getTVShowListObs(){
         final ApiInterface mApiService = ApiClient.getClient().create(ApiInterface.class);
 
-        return mApiService.RxGetTVShowList()
+        Locale current = getResources().getConfiguration().locale;
+        String param_lang = current.getLanguage() + "-" + current.getCountry();
+
+        if (param_lang.equals("in-ID"))
+        {
+            param_lang = "id-ID";
+        }
+
+        return mApiService.RxGetTVShowList(Constants.API_KEY, param_lang, 1)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -161,6 +176,21 @@ public class TVShowFragment extends Fragment {
                                 rvTvShow.setLayoutManager(new LinearLayoutManager(getContext()));
                                 ListTvShowAdapter listTvShowAdapter = new ListTvShowAdapter(tvShowList.getTvShowArrayList());
                                 rvTvShow.setAdapter(listTvShowAdapter);
+
+                                for (int i=0; i<tvShowList.getTvShowArrayList().size(); i++)
+                                {
+                                    Log.d(TAG, tvShowList.getTvShowArrayList().get(i).getName());
+                                }
+
+                                listTvShowAdapter.setOnItemClickCallback(new ListTvShowAdapter.OnItemClickCallback() {
+                                    @Override
+                                    public void onItemClicked(TVShow data) {
+                                        Intent intent = new Intent(getActivity(), DetailActivity.class);
+                                        intent.putExtra("Movie_ID", data.getId());
+                                        intent.putExtra("Category", 1);
+                                        startActivity(intent);
+                                    }
+                                });
                             }
 
                             @Override
@@ -172,7 +202,7 @@ public class TVShowFragment extends Fragment {
                             public void onComplete() {
                                 mProgressView.setVisibility(View.GONE);
 
-                                Log.d(TAG, "onComplete from Test Observable");
+                                Log.d(TAG, "onComplete from RxJava");
 
                                 this.dispose();
                             }

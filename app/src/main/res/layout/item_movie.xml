@@ -59,6 +59,7 @@
                 android:layout_marginTop="@dimen/margin_card_left"
                 android:layout_toEndOf="@id/imgView_poster"
                 android:text="TextView" />
+
         </RelativeLayout>
 
     </androidx.cardview.widget.CardView>

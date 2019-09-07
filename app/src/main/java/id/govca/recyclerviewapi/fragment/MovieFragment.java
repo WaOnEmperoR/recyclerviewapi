@@ -16,7 +16,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.pranavpandey.android.dynamic.toasts.DynamicToast;
+
 import java.util.List;
+import java.util.Locale;
 
 import id.govca.recyclerviewapi.DetailActivity;
 import id.govca.recyclerviewapi.R;
@@ -149,7 +152,17 @@ public class MovieFragment extends Fragment {
     private Observable<MovieList> getMovieListObs(){
         final ApiInterface mApiService = ApiClient.getClient().create(ApiInterface.class);
 
-        return mApiService.RxGetMovieList()
+        Locale current = getResources().getConfiguration().locale;
+        String param_lang = current.getLanguage() + "-" + current.getCountry();
+
+        if (param_lang.equals("in-ID"))
+        {
+            param_lang = "id-ID";
+        }
+
+        Log.d(TAG, param_lang);
+
+        return mApiService.RxGetMovieList(Constants.API_KEY, param_lang, 1)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -167,25 +180,21 @@ public class MovieFragment extends Fragment {
                     .subscribeWith(new DisposableObserver<MovieList>() {
                         @Override
                         public void onNext(MovieList movieList) {
-//                            DividerItemDecoration divider = new DividerItemDecoration(rvMovies.getContext(), DividerItemDecoration.VERTICAL);
-//                            divider.setDrawable(ContextCompat.getDrawable(getContext(), R.drawable.custom_divider));
-//                            rvMovies.addItemDecoration(divider);
+                            rvMovies.setLayoutManager(new LinearLayoutManager(getContext()));
+                            ListMovieAdapter listMovieAdapter = new ListMovieAdapter(movieList.getMovieArrayList());
+                            rvMovies.setAdapter(listMovieAdapter);
 
                             for (int i=0; i<movieList.getMovieArrayList().size(); i++)
                             {
                                 Log.d(TAG, movieList.getMovieArrayList().get(i).getTitle());
                             }
 
-                            rvMovies.setLayoutManager(new LinearLayoutManager(getContext()));
-                            ListMovieAdapter listMovieAdapter = new ListMovieAdapter(movieList.getMovieArrayList());
-                            rvMovies.setAdapter(listMovieAdapter);
-
                             listMovieAdapter.setOnItemClickCallback(new ListMovieAdapter.OnItemClickCallback() {
                                 @Override
                                 public void onItemClicked(Movie data) {
                                     Intent intent = new Intent(getActivity(), DetailActivity.class);
                                     intent.putExtra("Movie_ID", data.getId());
-                                    intent.putExtra("Category", "Movie");
+                                    intent.putExtra("Category", 0);
                                     startActivity(intent);
                                 }
                             });
@@ -194,14 +203,15 @@ public class MovieFragment extends Fragment {
                         @Override
                         public void onError(Throwable e) {
                             Log.e(TAG, "Observable error : " + e.getMessage());
+                            DynamicToast.makeError(getActivity(), e.getMessage(), 5).show();
                         }
 
                         @Override
                         public void onComplete() {
                             mProgressView.setVisibility(View.GONE);
 
-                            Log.d(TAG, "onComplete from Test Observable");
-
+                            Log.d(TAG, "onComplete from RxJava");
+                            DynamicToast.makeSuccess(getActivity(), "Finished Loading Data", 5).show();
                             this.dispose();
                         }
                     })
