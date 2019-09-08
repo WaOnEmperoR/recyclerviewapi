@@ -18,7 +18,7 @@ import id.govca.recyclerviewapi.helper.Constants;
 import id.govca.recyclerviewapi.pojo.Movie;
 
 public class ListMovieAdapter extends RecyclerView.Adapter<ListMovieAdapter.ListViewHolder>{
-    private ArrayList<Movie> listMovie;
+    private ArrayList<Movie> listMovie = new ArrayList<>();
 
     private OnItemClickCallback onItemClickCallback;
     public void setOnItemClickCallback(OnItemClickCallback onItemClickCallback) {
@@ -29,9 +29,14 @@ public class ListMovieAdapter extends RecyclerView.Adapter<ListMovieAdapter.List
         void onItemClicked(Movie data);
     }
 
-    public ListMovieAdapter(ArrayList<Movie> list)
+    public ListMovieAdapter()
     {
-        this.listMovie = list;
+    }
+
+    public void setData(ArrayList<Movie> items) {
+        listMovie.clear();
+        listMovie.addAll(items);
+        notifyDataSetChanged();
     }
 
     @NonNull

@@ -7,6 +7,9 @@ import android.os.Bundle;
 
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -29,6 +32,7 @@ import id.govca.recyclerviewapi.pojo.Movie;
 import id.govca.recyclerviewapi.pojo.MovieList;
 import id.govca.recyclerviewapi.rest.ApiClient;
 import id.govca.recyclerviewapi.rest.ApiInterface;
+import id.govca.recyclerviewapi.viewmodel.MovieListViewModel;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -60,9 +64,13 @@ public class MovieFragment extends Fragment {
     private final String TAG = this.getClass().getSimpleName();
     private View mProgressView;
 
+    private ListMovieAdapter listMovieAdapter;
+
     private RecyclerView rvMovies;
 
     private OnFragmentInteractionListener mListener;
+
+    private MovieListViewModel movieListViewModel;
 
     public MovieFragment() {
         // Required empty public constructor
@@ -105,10 +113,54 @@ public class MovieFragment extends Fragment {
         rvMovies = view.findViewById(R.id.recyclerView_movie);
         rvMovies.setHasFixedSize(true);
 
-        ObserveMovie();
+        listMovieAdapter = new ListMovieAdapter();
+        listMovieAdapter.notifyDataSetChanged();
+
+        showLoading(true);
+
+        movieListViewModel = ViewModelProviders.of(this).get(MovieListViewModel.class);
+        movieListViewModel.getListMovies().observe(this, getMovieList);
+
+        Locale current = getResources().getConfiguration().locale;
+
+        String param_lang = current.getLanguage() + "-" + current.getCountry();
+        if (param_lang.equals("in-ID"))
+        {
+            param_lang = "id-ID";
+        }
+
+        movieListViewModel.setListMovies(param_lang);
+
+        rvMovies.setLayoutManager(new LinearLayoutManager(getContext()));
+        rvMovies.setAdapter(listMovieAdapter);
+
+        listMovieAdapter.setOnItemClickCallback(new ListMovieAdapter.OnItemClickCallback() {
+            @Override
+            public void onItemClicked(Movie data) {
+                Log.d(TAG, String.valueOf(data.getId()));
+
+                Intent intent = new Intent(getActivity(), DetailActivity.class);
+                intent.putExtra("Movie_ID", data.getId());
+                intent.putExtra("Category", 0);
+                startActivity(intent);
+            }
+        });
+
+
 
         return view;
     }
+
+    private Observer<MovieList> getMovieList = new Observer<MovieList>() {
+        @Override
+        public void onChanged(MovieList movieList) {
+            if (movieList!=null)
+            {
+                listMovieAdapter.setData(movieList.getMovieArrayList());
+                showLoading(false);
+            }
+        }
+    };
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -149,72 +201,11 @@ public class MovieFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    private Observable<MovieList> getMovieListObs(){
-        final ApiInterface mApiService = ApiClient.getClient().create(ApiInterface.class);
-
-        Locale current = getResources().getConfiguration().locale;
-        String param_lang = current.getLanguage() + "-" + current.getCountry();
-
-        if (param_lang.equals("in-ID"))
-        {
-            param_lang = "id-ID";
+    private void showLoading(Boolean state) {
+        if (state) {
+            mProgressView.setVisibility(View.VISIBLE);
+        } else {
+            mProgressView.setVisibility(View.GONE);
         }
-
-        Log.d(TAG, param_lang);
-
-        return mApiService.RxGetMovieList(Constants.API_KEY, param_lang, 1)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-    }
-
-    private void ObserveMovie()
-    {
-        mProgressView.setVisibility(View.VISIBLE);
-
-        Observable<MovieList> movieListObservable = getMovieListObs();
-
-        disposable.add(
-                movieListObservable
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeWith(new DisposableObserver<MovieList>() {
-                        @Override
-                        public void onNext(MovieList movieList) {
-                            rvMovies.setLayoutManager(new LinearLayoutManager(getContext()));
-                            ListMovieAdapter listMovieAdapter = new ListMovieAdapter(movieList.getMovieArrayList());
-                            rvMovies.setAdapter(listMovieAdapter);
-
-                            for (int i=0; i<movieList.getMovieArrayList().size(); i++)
-                            {
-                                Log.d(TAG, movieList.getMovieArrayList().get(i).getTitle());
-                            }
-
-                            listMovieAdapter.setOnItemClickCallback(new ListMovieAdapter.OnItemClickCallback() {
-                                @Override
-                                public void onItemClicked(Movie data) {
-                                    Intent intent = new Intent(getActivity(), DetailActivity.class);
-                                    intent.putExtra("Movie_ID", data.getId());
-                                    intent.putExtra("Category", 0);
-                                    startActivity(intent);
-                                }
-                            });
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            Log.e(TAG, "Observable error : " + e.getMessage());
-                            DynamicToast.makeError(getActivity(), e.getMessage(), 5).show();
-                        }
-
-                        @Override
-                        public void onComplete() {
-                            mProgressView.setVisibility(View.GONE);
-
-                            Log.d(TAG, "onComplete from RxJava");
-                            DynamicToast.makeSuccess(getActivity(), "Finished Loading Data", 5).show();
-                            this.dispose();
-                        }
-                    })
-        );
     }
 }

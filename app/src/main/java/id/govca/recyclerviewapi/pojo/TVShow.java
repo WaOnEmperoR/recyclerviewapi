@@ -3,100 +3,101 @@ package id.govca.recyclerviewapi.pojo;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({
-        "first_air_date",
-        "name"
-})
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 public class TVShow implements Parcelable {
-    @JsonProperty("name")
+    @SerializedName("name")
+    @Expose
     private String name;
-    @JsonProperty("popularity")
+    @SerializedName("popularity")
+    @Expose
     private double popularity;
-    @JsonProperty("vote_average")
+    @SerializedName("vote_average")
+    @Expose
     private double vote_average;
-    @JsonProperty("overview")
+    @SerializedName("overview")
+    @Expose
     private String overview;
-    @JsonProperty("first_air_date")
+    @SerializedName("first_air_date")
+    @Expose
     private String first_air_date;
-    @JsonProperty("poster_path")
+    @SerializedName("poster_path")
+    @Expose
     private String poster_path;
-    @JsonProperty("genre_ids")
+    @SerializedName("genre_ids")
+    @Expose
     private int[] genre_ids;
-    @JsonProperty("id")
+    @SerializedName("id")
+    @Expose
     private int id;
 
-    @JsonProperty("name")
+    @SerializedName("name")
     public String getName() {
         return name;
     }
 
-    @JsonProperty("name")
+    @SerializedName("name")
     public void setName(String name) {
         this.name = name;
     }
 
-    @JsonProperty("popularity")
+    @SerializedName("popularity")
     public double getPopularity() {
         return popularity;
     }
 
-    @JsonProperty("popularity")
+    @SerializedName("popularity")
     public void setPopularity(double popularity) {
         this.popularity = popularity;
     }
 
-    @JsonProperty("vote_average")
+    @SerializedName("vote_average")
     public double getVote_average() {
         return vote_average;
     }
 
-    @JsonProperty("vote_average")
+    @SerializedName("vote_average")
     public void setVote_average(double vote_average) {
         this.vote_average = vote_average;
     }
 
-    @JsonProperty("overview")
+    @SerializedName("overview")
     public String getOverview() {
         return overview;
     }
 
-    @JsonProperty("overview")
+    @SerializedName("overview")
     public void setOverview(String overview) {
         this.overview = overview;
     }
 
-    @JsonProperty("first_air_date")
+    @SerializedName("first_air_date")
     public String getFirst_air_date() {
         return first_air_date;
     }
 
-    @JsonProperty("first_air_date")
+    @SerializedName("first_air_date")
     public void setFirst_air_date(String first_air_date) {
         this.first_air_date = first_air_date;
     }
 
-    @JsonProperty("poster_path")
+    @SerializedName("poster_path")
     public String getPoster_path() {
         return poster_path;
     }
 
-    @JsonProperty("poster_path")
+    @SerializedName("poster_path")
     public void setPoster_path(String poster_path) {
         this.poster_path = poster_path;
     }
 
-    @JsonProperty("genre_ids")
+    @SerializedName("genre_ids")
     public int[] getGenre_ids() {
         return genre_ids;
     }
 
-    @JsonProperty("genre_ids")
+    @SerializedName("genre_ids")
     public void setGenre_ids(int[] genre_ids) {
         this.genre_ids = genre_ids;
     }
@@ -144,12 +145,12 @@ public class TVShow implements Parcelable {
         }
     };
 
-    @JsonProperty("id")
+    @SerializedName("id")
     public int getId() {
         return id;
     }
 
-    @JsonProperty("id")
+    @SerializedName("id")
     public void setId(int id) {
         this.id = id;
     }

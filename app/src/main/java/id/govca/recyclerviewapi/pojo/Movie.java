@@ -89,6 +89,14 @@ public class Movie implements Parcelable {
         this.genre_ids = genre_ids;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -131,12 +139,4 @@ public class Movie implements Parcelable {
             return new Movie[size];
         }
     };
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 }

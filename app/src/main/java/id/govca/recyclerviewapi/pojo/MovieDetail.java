@@ -77,7 +77,6 @@ public class MovieDetail {
         this.poster_path = poster_path;
     }
 
-
     public String getHomepage() {
         return homepage;
     }

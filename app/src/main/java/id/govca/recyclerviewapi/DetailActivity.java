@@ -53,6 +53,9 @@ public class DetailActivity extends AppCompatActivity {
         idThings = b.getInt("Movie_ID");
         category = b.getInt("Category");
 
+        Log.d(TAG, String.valueOf(idThings));
+        Log.d(TAG, String.valueOf(category));
+
         mProgressView = findViewById(R.id.progressBarDetail);
         mScrollView = findViewById(R.id.scrollViewDetail);
 
@@ -99,7 +102,7 @@ public class DetailActivity extends AppCompatActivity {
     {
         Locale current = getResources().getConfiguration().locale;
 
-        String param_lang = current.getCountry() + "-" + current.getLanguage();
+        String param_lang = current.getLanguage() + "-" + current.getCountry();
 
         if (param_lang.equals("in-ID"))
         {
