@@ -6,6 +6,8 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,6 +29,8 @@ import id.govca.recyclerviewapi.pojo.TVShow;
 import id.govca.recyclerviewapi.pojo.TVShowList;
 import id.govca.recyclerviewapi.rest.ApiClient;
 import id.govca.recyclerviewapi.rest.ApiInterface;
+import id.govca.recyclerviewapi.viewmodel.MovieListViewModel;
+import id.govca.recyclerviewapi.viewmodel.TvShowListViewModel;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -58,7 +62,11 @@ public class TVShowFragment extends Fragment {
 
     private RecyclerView rvTvShow;
 
+    private ListTvShowAdapter listTvShowAdapter;
+
     private OnFragmentInteractionListener mListener;
+
+    private TvShowListViewModel tvShowListViewModel;
 
     public TVShowFragment() {
         // Required empty public constructor
@@ -98,13 +106,55 @@ public class TVShowFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_tvshow, container, false);
         mProgressView = view.findViewById(R.id.progressBarTvShow);
 
+        showLoading(true);
+
         rvTvShow = view.findViewById(R.id.recyclerView_tv_show);
         rvTvShow.setHasFixedSize(true);
 
-        ObserveTVShow();
+        listTvShowAdapter = new ListTvShowAdapter();
+        listTvShowAdapter.notifyDataSetChanged();
+
+        tvShowListViewModel = ViewModelProviders.of(this).get(TvShowListViewModel.class);
+        tvShowListViewModel.getListTvShows().observe(this, getTvShowList);
+
+        Locale current = getResources().getConfiguration().locale;
+
+        String param_lang = current.getLanguage() + "-" + current.getCountry();
+        if (param_lang.equals("in-ID"))
+        {
+            param_lang = "id-ID";
+        }
+
+        tvShowListViewModel.setListTvShows(param_lang);
+
+        rvTvShow.setLayoutManager(new LinearLayoutManager(getContext()));
+        rvTvShow.setAdapter(listTvShowAdapter);
+
+        listTvShowAdapter.setOnItemClickCallback(new ListTvShowAdapter.OnItemClickCallback() {
+            @Override
+            public void onItemClicked(TVShow data) {
+                Log.d(TAG, String.valueOf(data.getId()));
+
+                Intent intent = new Intent(getActivity(), DetailActivity.class);
+                intent.putExtra("Movie_ID", data.getId());
+                intent.putExtra("Category", 1);
+                startActivity(intent);
+            }
+        });
 
         return view;
     }
+
+    private Observer<TVShowList> getTvShowList = new Observer<TVShowList>() {
+        @Override
+        public void onChanged(TVShowList tvShowList) {
+            if (tvShowList!=null)
+            {
+                listTvShowAdapter.setData(tvShowList.getTvShowArrayList());
+                showLoading(false);
+            }
+        }
+    };
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -145,69 +195,12 @@ public class TVShowFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    private Observable<TVShowList> getTVShowListObs(){
-        final ApiInterface mApiService = ApiClient.getClient().create(ApiInterface.class);
-
-        Locale current = getResources().getConfiguration().locale;
-        String param_lang = current.getLanguage() + "-" + current.getCountry();
-
-        if (param_lang.equals("in-ID"))
-        {
-            param_lang = "id-ID";
+    private void showLoading(Boolean state) {
+        if (state) {
+            mProgressView.setVisibility(View.VISIBLE);
+        } else {
+            mProgressView.setVisibility(View.GONE);
         }
-
-        return mApiService.RxGetTVShowList(Constants.API_KEY, param_lang, 1)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-    }
-
-    private void ObserveTVShow(){
-        mProgressView.setVisibility(View.VISIBLE);
-
-        Observable<TVShowList> tvShowListObservable = getTVShowListObs();
-
-        disposable.add(
-                tvShowListObservable
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeWith(new DisposableObserver<TVShowList>() {
-                            @Override
-                            public void onNext(TVShowList tvShowList) {
-                                rvTvShow.setLayoutManager(new LinearLayoutManager(getContext()));
-                                ListTvShowAdapter listTvShowAdapter = new ListTvShowAdapter(tvShowList.getTvShowArrayList());
-                                rvTvShow.setAdapter(listTvShowAdapter);
-
-                                for (int i=0; i<tvShowList.getTvShowArrayList().size(); i++)
-                                {
-                                    Log.d(TAG, tvShowList.getTvShowArrayList().get(i).getName());
-                                }
-
-                                listTvShowAdapter.setOnItemClickCallback(new ListTvShowAdapter.OnItemClickCallback() {
-                                    @Override
-                                    public void onItemClicked(TVShow data) {
-                                        Intent intent = new Intent(getActivity(), DetailActivity.class);
-                                        intent.putExtra("Movie_ID", data.getId());
-                                        intent.putExtra("Category", 1);
-                                        startActivity(intent);
-                                    }
-                                });
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                Log.e(TAG, "Observable error : " + e.getMessage());
-                            }
-
-                            @Override
-                            public void onComplete() {
-                                mProgressView.setVisibility(View.GONE);
-
-                                Log.d(TAG, "onComplete from RxJava");
-
-                                this.dispose();
-                            }
-                        })
-        );
     }
 
 }

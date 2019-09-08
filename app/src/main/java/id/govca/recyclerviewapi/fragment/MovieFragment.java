@@ -59,8 +59,6 @@ public class MovieFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private CompositeDisposable disposable = new CompositeDisposable();
-
     private final String TAG = this.getClass().getSimpleName();
     private View mProgressView;
 
@@ -110,13 +108,13 @@ public class MovieFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_movie, container, false);
         mProgressView = view.findViewById(R.id.progressBarMovie);
 
+        showLoading(true);
+
         rvMovies = view.findViewById(R.id.recyclerView_movie);
         rvMovies.setHasFixedSize(true);
 
         listMovieAdapter = new ListMovieAdapter();
         listMovieAdapter.notifyDataSetChanged();
-
-        showLoading(true);
 
         movieListViewModel = ViewModelProviders.of(this).get(MovieListViewModel.class);
         movieListViewModel.getListMovies().observe(this, getMovieList);

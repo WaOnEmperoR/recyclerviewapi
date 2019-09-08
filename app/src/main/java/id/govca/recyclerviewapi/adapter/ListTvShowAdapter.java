@@ -19,11 +19,21 @@ import id.govca.recyclerviewapi.pojo.Movie;
 import id.govca.recyclerviewapi.pojo.TVShow;
 
 public class ListTvShowAdapter extends RecyclerView.Adapter<ListTvShowAdapter.ListViewHolder>{
-    private ArrayList<TVShow> listTvShow;
+    private ArrayList<TVShow> listTvShow = new ArrayList<>();
 
     private ListTvShowAdapter.OnItemClickCallback onItemClickCallback;
     public void setOnItemClickCallback(ListTvShowAdapter.OnItemClickCallback onItemClickCallback) {
         this.onItemClickCallback = onItemClickCallback;
+    }
+
+    public ListTvShowAdapter()
+    {
+    }
+
+    public void setData(ArrayList<TVShow> items) {
+        listTvShow.clear();
+        listTvShow.addAll(items);
+        notifyDataSetChanged();
     }
 
     @NonNull
