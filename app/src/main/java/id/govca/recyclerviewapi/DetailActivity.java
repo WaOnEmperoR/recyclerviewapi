@@ -1,6 +1,10 @@
 package id.govca.recyclerviewapi;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -26,6 +30,8 @@ import id.govca.recyclerviewapi.pojo.TVShow;
 import id.govca.recyclerviewapi.pojo.TVShowDetail;
 import id.govca.recyclerviewapi.rest.ApiClient;
 import id.govca.recyclerviewapi.rest.ApiInterface;
+import id.govca.recyclerviewapi.viewmodel.MovieListViewModel;
+import id.govca.recyclerviewapi.viewmodel.MovieViewModel;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -44,6 +50,8 @@ public class DetailActivity extends AppCompatActivity {
     private TextView tv_name, tv_rating, tv_genres, tv_homepage, tv_year, tv_synopsis;
     private ImageView imgView_poster;
 
+    private MovieViewModel movieViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,9 +67,6 @@ public class DetailActivity extends AppCompatActivity {
         mProgressView = findViewById(R.id.progressBarDetail);
         mScrollView = findViewById(R.id.scrollViewDetail);
 
-        mProgressView.setVisibility(View.VISIBLE);
-        mScrollView.setVisibility(View.GONE);
-
         tv_name = findViewById(R.id.tv_movie_name);
         tv_rating = findViewById(R.id.tv_movie_rating_content);
         tv_genres = findViewById(R.id.tv_genres_content);
@@ -70,16 +75,57 @@ public class DetailActivity extends AppCompatActivity {
         tv_synopsis = findViewById(R.id.tv_movie_synopsis_content);
         imgView_poster = findViewById(R.id.imgView_poster);
 
-
         if (category == 0)
         {
-            ObserveMovieDetail();
+            movieViewModel = ViewModelProviders.of(this).get(MovieViewModel.class);
+            movieViewModel.getMovieDetail().observe(this, getMovieDetail);
+
+            Locale current = getResources().getConfiguration().locale;
+
+            String param_lang = current.getLanguage() + "-" + current.getCountry();
+            if (param_lang.equals("in-ID"))
+            {
+                param_lang = "id-ID";
+            }
+
+            movieViewModel.setMovieDetail(idThings, param_lang);
         }
         else
         {
             ObserveTvShowDetail();
         }
 
+    }
+
+    private Observer<MovieDetail> getMovieDetail = new Observer<MovieDetail>() {
+        @Override
+        public void onChanged(MovieDetail movieDetail) {
+            if (movieDetail!=null){
+                pseudoAdapterMovie(movieDetail);
+                showLoading(false);
+            }
+        }
+    };
+
+    private void pseudoAdapterMovie(MovieDetail movieDetail){
+        StringJoiner joiner = new StringJoiner(", ");
+        Genre[] genres = movieDetail.getGenres();
+        for (int i=0; i<genres.length; i++)
+        {
+            joiner.add(genres[i].getName());
+        }
+
+        tv_name.setText(movieDetail.getOriginal_title());
+        tv_genres.setText(joiner.toString());
+        tv_homepage.setText(movieDetail.getHomepage());
+        tv_synopsis.setText(movieDetail.getOverview());
+        tv_year.setText(movieDetail.getRelease_date());
+        tv_rating.setText(String.valueOf(movieDetail.getVote_average()));
+
+        Glide
+                .with(getBaseContext())
+                .load(Constants.IMAGE_ROOT_LARGE + movieDetail.getPoster_path())
+                .into(imgView_poster);
     }
 
     private Observable<MovieDetail> getMovieDetailObs(String language){
@@ -230,5 +276,15 @@ public class DetailActivity extends AppCompatActivity {
             startActivity(mIntent);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showLoading(Boolean state) {
+        if (state) {
+            mProgressView.setVisibility(View.VISIBLE);
+            mScrollView.setVisibility(View.GONE);
+        } else {
+            mProgressView.setVisibility(View.GONE);
+            mScrollView.setVisibility(View.VISIBLE);
+        }
     }
 }
