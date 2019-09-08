@@ -1,5 +1,6 @@
 package id.govca.recyclerviewapi.viewmodel;
 
+import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.view.View;
@@ -13,6 +14,7 @@ import com.pranavpandey.android.dynamic.toasts.DynamicToast;
 import java.util.Locale;
 
 import id.govca.recyclerviewapi.DetailActivity;
+import id.govca.recyclerviewapi.GlobalApplication;
 import id.govca.recyclerviewapi.adapter.ListMovieAdapter;
 import id.govca.recyclerviewapi.helper.Constants;
 import id.govca.recyclerviewapi.pojo.Movie;
@@ -30,6 +32,8 @@ public class MovieListViewModel extends ViewModel {
     private CompositeDisposable disposable = new CompositeDisposable();
     private final String TAG = this.getClass().getSimpleName();
 
+    Context context = GlobalApplication.getAppContext();
+
     public MutableLiveData<MovieList> getListMovies() {
         return listMovies;
     }
@@ -42,7 +46,7 @@ public class MovieListViewModel extends ViewModel {
     private Observable<MovieList> getMovieListObs(String param_lang){
         final ApiInterface mApiService = ApiClient.getClient().create(ApiInterface.class);
 
-        return mApiService.RxGetMovieList(Constants.API_KEY, param_lang, 1)
+        return mApiService.RxGetMovieList(Constants.API_KEY, param_lang)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -69,11 +73,13 @@ public class MovieListViewModel extends ViewModel {
                             @Override
                             public void onError(Throwable e) {
                                 Log.e(TAG, "Observable error : " + e.getMessage());
+                                DynamicToast.makeError(context, e.getMessage(), 5).show();
                             }
 
                             @Override
                             public void onComplete() {
                                 Log.d(TAG, "onComplete from RxJava");
+                                DynamicToast.makeSuccess(context, "Finished Loading Data", 3).show();
                                 this.dispose();
                             }
                         })

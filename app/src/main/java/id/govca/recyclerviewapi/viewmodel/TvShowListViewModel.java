@@ -1,10 +1,14 @@
 package id.govca.recyclerviewapi.viewmodel;
 
+import android.content.Context;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.pranavpandey.android.dynamic.toasts.DynamicToast;
+
+import id.govca.recyclerviewapi.GlobalApplication;
 import id.govca.recyclerviewapi.helper.Constants;
 import id.govca.recyclerviewapi.pojo.MovieList;
 import id.govca.recyclerviewapi.pojo.TVShowList;
@@ -21,6 +25,8 @@ public class TvShowListViewModel extends ViewModel {
     private CompositeDisposable disposable = new CompositeDisposable();
     private final String TAG = this.getClass().getSimpleName();
 
+    Context context = GlobalApplication.getAppContext();
+
     public MutableLiveData<TVShowList> getListTvShows() {
         return listTvShows;
     }
@@ -34,7 +40,7 @@ public class TvShowListViewModel extends ViewModel {
     {
         final ApiInterface mApiService = ApiClient.getClient().create(ApiInterface.class);
 
-        return mApiService.RxGetTVShowList(Constants.API_KEY, param_lang, 1)
+        return mApiService.RxGetTVShowList(Constants.API_KEY, param_lang)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -61,11 +67,13 @@ public class TvShowListViewModel extends ViewModel {
                         @Override
                         public void onError(Throwable e) {
                             Log.e(TAG, "Observable error : " + e.getMessage());
+                            DynamicToast.makeError(context, e.getMessage(), 5).show();
                         }
 
                         @Override
                         public void onComplete() {
                             Log.d(TAG, "onComplete from RxJava");
+                            DynamicToast.makeSuccess(context, "Finished Loading Data", 3).show();
                             this.dispose();
                         }
                     })

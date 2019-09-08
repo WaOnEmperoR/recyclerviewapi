@@ -12,15 +12,13 @@ import retrofit2.http.Query;
 
 public interface ApiInterface {
 
-    @GET("movie/popular")
+    @GET("discover/movie")
     Observable<MovieList> RxGetMovieList(@Query("api_key") String apiKey,
-                                         @Query("language") String language,
-                                         @Query("page") int page);
+                                         @Query("language") String language);
 
-    @GET("tv/popular")
+    @GET("discover/tv")
     Observable<TVShowList> RxGetTVShowList(@Query("api_key") String apiKey,
-                                           @Query("language") String language,
-                                           @Query("page") int page);
+                                           @Query("language") String language);
 
     @GET("movie/{Id}")
     Observable<MovieDetail> RxMovieDetails(@Path("Id") int id,

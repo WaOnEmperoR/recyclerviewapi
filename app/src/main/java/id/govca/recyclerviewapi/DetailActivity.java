@@ -32,6 +32,7 @@ import id.govca.recyclerviewapi.rest.ApiClient;
 import id.govca.recyclerviewapi.rest.ApiInterface;
 import id.govca.recyclerviewapi.viewmodel.MovieListViewModel;
 import id.govca.recyclerviewapi.viewmodel.MovieViewModel;
+import id.govca.recyclerviewapi.viewmodel.TvShowViewModel;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -51,6 +52,7 @@ public class DetailActivity extends AppCompatActivity {
     private ImageView imgView_poster;
 
     private MovieViewModel movieViewModel;
+    private TvShowViewModel tvShowViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,9 +62,6 @@ public class DetailActivity extends AppCompatActivity {
         Bundle b = getIntent().getExtras();
         idThings = b.getInt("Movie_ID");
         category = b.getInt("Category");
-
-        Log.d(TAG, String.valueOf(idThings));
-        Log.d(TAG, String.valueOf(category));
 
         mProgressView = findViewById(R.id.progressBarDetail);
         mScrollView = findViewById(R.id.scrollViewDetail);
@@ -90,9 +89,20 @@ public class DetailActivity extends AppCompatActivity {
 
             movieViewModel.setMovieDetail(idThings, param_lang);
         }
-        else
+        else if (category == 1)
         {
-            ObserveTvShowDetail();
+            tvShowViewModel = ViewModelProviders.of(this).get(TvShowViewModel.class);
+            tvShowViewModel.getTvShowDetail().observe(this, getTVShowDetail);
+
+            Locale current = getResources().getConfiguration().locale;
+
+            String param_lang = current.getLanguage() + "-" + current.getCountry();
+            if (param_lang.equals("in-ID"))
+            {
+                param_lang = "id-ID";
+            }
+
+            tvShowViewModel.setTvShowDetail(idThings, param_lang);
         }
 
     }
@@ -102,6 +112,17 @@ public class DetailActivity extends AppCompatActivity {
         public void onChanged(MovieDetail movieDetail) {
             if (movieDetail!=null){
                 pseudoAdapterMovie(movieDetail);
+                showLoading(false);
+            }
+        }
+    };
+
+    private Observer<TVShowDetail> getTVShowDetail = new Observer<TVShowDetail>() {
+        @Override
+        public void onChanged(TVShowDetail tvShowDetail) {
+            if (tvShowDetail != null)
+            {
+                pseudoAdapterTVShow(tvShowDetail);
                 showLoading(false);
             }
         }
@@ -125,6 +146,28 @@ public class DetailActivity extends AppCompatActivity {
         Glide
                 .with(getBaseContext())
                 .load(Constants.IMAGE_ROOT_LARGE + movieDetail.getPoster_path())
+                .into(imgView_poster);
+    }
+
+    private void pseudoAdapterTVShow(TVShowDetail tvShowDetail)
+    {
+        StringJoiner joiner = new StringJoiner(", ");
+        Genre[] genres = tvShowDetail.getGenres();
+        for (int i=0; i<genres.length; i++)
+        {
+            joiner.add(genres[i].getName());
+        }
+
+        tv_name.setText(tvShowDetail.getName());
+        tv_genres.setText(joiner.toString());
+        tv_homepage.setText(tvShowDetail.getHomepage());
+        tv_synopsis.setText(tvShowDetail.getOverview());
+        tv_year.setText(tvShowDetail.getFirst_air_date());
+        tv_rating.setText(String.valueOf(tvShowDetail.getVote_average()));
+
+        Glide
+                .with(getBaseContext())
+                .load(Constants.IMAGE_ROOT_LARGE + tvShowDetail.getPoster_path())
                 .into(imgView_poster);
     }
 

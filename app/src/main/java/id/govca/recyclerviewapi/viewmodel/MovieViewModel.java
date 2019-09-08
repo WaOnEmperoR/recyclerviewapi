@@ -1,10 +1,14 @@
 package id.govca.recyclerviewapi.viewmodel;
 
+import android.content.Context;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.pranavpandey.android.dynamic.toasts.DynamicToast;
+
+import id.govca.recyclerviewapi.GlobalApplication;
 import id.govca.recyclerviewapi.helper.Constants;
 import id.govca.recyclerviewapi.pojo.MovieDetail;
 import id.govca.recyclerviewapi.rest.ApiClient;
@@ -19,6 +23,8 @@ public class MovieViewModel extends ViewModel {
     private MutableLiveData<MovieDetail> movieDetail = new MutableLiveData<>();
     private CompositeDisposable disposable = new CompositeDisposable();
     private final String TAG = this.getClass().getSimpleName();
+
+    Context context = GlobalApplication.getAppContext();
 
     public MutableLiveData<MovieDetail> getMovieDetail() {
         return movieDetail;
@@ -54,11 +60,13 @@ public class MovieViewModel extends ViewModel {
                             @Override
                             public void onError(Throwable e) {
                                 Log.e(TAG, "Observable error : " + e.getMessage());
+                                DynamicToast.makeError(context, e.getMessage(), 5).show();
                             }
 
                             @Override
                             public void onComplete() {
                                 Log.d(TAG, "onComplete from RxJava");
+                                DynamicToast.makeSuccess(context, "Finished Loading Data", 3).show();
                                 this.dispose();
                             }
                         })
