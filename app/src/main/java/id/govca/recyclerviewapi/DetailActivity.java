@@ -7,12 +7,14 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -22,6 +24,7 @@ import com.pranavpandey.android.dynamic.toasts.DynamicToast;
 import java.util.Locale;
 import java.util.StringJoiner;
 
+import id.govca.recyclerviewapi.entity.Favorite;
 import id.govca.recyclerviewapi.helper.Constants;
 import id.govca.recyclerviewapi.pojo.Genre;
 import id.govca.recyclerviewapi.pojo.MovieDetail;
@@ -51,6 +54,8 @@ public class DetailActivity extends AppCompatActivity {
     private TextView tv_name, tv_rating, tv_genres, tv_homepage, tv_year, tv_synopsis;
     private ImageView imgView_poster;
 
+    Button favoriteButton;
+
     private MovieViewModel movieViewModel;
     private TvShowViewModel tvShowViewModel;
 
@@ -73,6 +78,7 @@ public class DetailActivity extends AppCompatActivity {
         tv_year = findViewById(R.id.tv_movie_year_content);
         tv_synopsis = findViewById(R.id.tv_movie_synopsis_content);
         imgView_poster = findViewById(R.id.imgView_poster);
+        favoriteButton = findViewById(R.id.btn_favorite);
 
         if (category == 0)
         {
@@ -127,7 +133,7 @@ public class DetailActivity extends AppCompatActivity {
         }
     };
 
-    private void pseudoAdapterMovie(MovieDetail movieDetail){
+    private void pseudoAdapterMovie(final MovieDetail movieDetail){
         StringJoiner joiner = new StringJoiner(", ");
         Genre[] genres = movieDetail.getGenres();
         for (int i=0; i<genres.length; i++)
@@ -146,9 +152,36 @@ public class DetailActivity extends AppCompatActivity {
                 .with(getBaseContext())
                 .load(Constants.IMAGE_ROOT_LARGE + movieDetail.getPoster_path())
                 .into(imgView_poster);
+
+        CheckMovie checkMovie = new CheckMovie();
+        checkMovie.execute(movieDetail.getId());
+
+        //Movie is already set as favorite
+        if (isMovieFavorite(movieDetail.getId()))
+        {
+            favoriteButton.setText(getResources().getString(R.string.title_unfavorite));
+            favoriteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    unsetFavoriteMovie(movieDetail);
+                }
+            });
+        }
+        // not yet a favorite
+        else
+        {
+            favoriteButton.setText(getResources().getString(R.string.title_favorite));
+            favoriteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    setFavoriteMovie(movieDetail);
+                }
+            });
+        }
+
     }
 
-    private void pseudoAdapterTVShow(TVShowDetail tvShowDetail)
+    private void pseudoAdapterTVShow(final TVShowDetail tvShowDetail)
     {
         StringJoiner joiner = new StringJoiner(", ");
         Genre[] genres = tvShowDetail.getGenres();
@@ -168,6 +201,10 @@ public class DetailActivity extends AppCompatActivity {
                 .with(getBaseContext())
                 .load(Constants.IMAGE_ROOT_LARGE + tvShowDetail.getPoster_path())
                 .into(imgView_poster);
+
+        CheckMovie cm = new CheckMovie();
+        cm.execute(idThings);
+
     }
 
     @Override
@@ -193,5 +230,173 @@ public class DetailActivity extends AppCompatActivity {
             mProgressView.setVisibility(View.GONE);
             mScrollView.setVisibility(View.VISIBLE);
         }
+    }
+
+
+    private class CheckMovie extends AsyncTask<Integer, Void, Boolean>{
+
+        @Override
+        protected Boolean doInBackground(Integer... integers) {
+            int count = DatabaseClient.getInstance(getApplicationContext())
+                    .getAppDatabase()
+                    .getFavoriteDAO()
+                    .checkFavoriteMovie(integers[0]);
+
+            return count>0;
+        }
+    }
+
+    private class CheckTVShow extends AsyncTask<Integer, Void, Boolean>{
+
+        @Override
+        protected Boolean doInBackground(Integer... integers) {
+            int count = DatabaseClient.getInstance(getApplicationContext())
+                    .getAppDatabase()
+                    .getFavoriteDAO()
+                    .checkFavoriteTVShow(integers[0]);
+
+            return count>0;
+        }
+
+    }
+
+    private void setFavoriteMovie(final MovieDetail movieDetail){
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                Favorite fav = new Favorite();
+
+                fav.setThingsId(movieDetail.getId());
+                fav.setDate_available(movieDetail.getRelease_date());
+                fav.setHomepage(movieDetail.getHomepage());
+                fav.setType(0);
+                fav.setTitle(movieDetail.getOriginal_title());
+                fav.setVote_average(movieDetail.getVote_average());
+                fav.setPoster_path(movieDetail.getPoster_path());
+
+                DatabaseClient.getInstance(getApplicationContext())
+                        .getAppDatabase()
+                        .getFavoriteDAO()
+                        .insertFavorite(fav);
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid)
+            {
+                super.onPostExecute(aVoid);
+                favoriteButton.setText(getResources().getString(R.string.title_unfavorite));
+                Log.d(TAG, "Set as Favorite Movie success");
+            }
+        }.execute();
+    }
+
+    private void unsetFavoriteMovie(final MovieDetail movieDetail)
+    {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                Favorite fav = new Favorite();
+
+                fav.setThingsId(movieDetail.getId());
+                fav.setDate_available(movieDetail.getRelease_date());
+                fav.setHomepage(movieDetail.getHomepage());
+                fav.setType(0);
+                fav.setTitle(movieDetail.getOriginal_title());
+                fav.setVote_average(movieDetail.getVote_average());
+                fav.setPoster_path(movieDetail.getPoster_path());
+
+                DatabaseClient.getInstance(getApplicationContext())
+                        .getAppDatabase()
+                        .getFavoriteDAO()
+                        .deleteFavorite(fav);
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid)
+            {
+                super.onPostExecute(aVoid);
+                favoriteButton.setText(getResources().getString(R.string.title_favorite));
+                Log.d(TAG, "Delete Favorite Movie success");
+            }
+        }.execute();
+    }
+
+    private boolean isTVShowFavorite(int idThings)
+    {
+        int count = DatabaseClient.getInstance(getApplicationContext())
+                .getAppDatabase()
+                .getFavoriteDAO()
+                .checkFavoriteTVShow(idThings);
+
+        return (count>0);
+    }
+
+    private void setFavoriteTVShow(final TVShowDetail tvShowDetail){
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                Favorite fav = new Favorite();
+
+                fav.setThingsId(tvShowDetail.getId());
+                fav.setDate_available(tvShowDetail.getFirst_air_date());
+                fav.setHomepage(tvShowDetail.getHomepage());
+                fav.setType(1);
+                fav.setTitle(tvShowDetail.getName());
+                fav.setVote_average(tvShowDetail.getVote_average());
+                fav.setPoster_path(tvShowDetail.getPoster_path());
+
+                DatabaseClient.getInstance(getApplicationContext())
+                        .getAppDatabase()
+                        .getFavoriteDAO()
+                        .insertFavorite(fav);
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid)
+            {
+                super.onPostExecute(aVoid);
+                favoriteButton.setText(getResources().getString(R.string.title_unfavorite));
+                Log.d(TAG, "Set TV Show as Favorite success");
+            }
+        }.execute();
+    }
+
+    private void unsetFavoriteTVShow(final TVShowDetail tvShowDetail)
+    {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                Favorite fav = new Favorite();
+
+                fav.setThingsId(tvShowDetail.getId());
+                fav.setDate_available(tvShowDetail.getFirst_air_date());
+                fav.setHomepage(tvShowDetail.getHomepage());
+                fav.setType(1);
+                fav.setTitle(tvShowDetail.getName());
+                fav.setVote_average(tvShowDetail.getVote_average());
+                fav.setPoster_path(tvShowDetail.getPoster_path());
+
+                DatabaseClient.getInstance(getApplicationContext())
+                        .getAppDatabase()
+                        .getFavoriteDAO()
+                        .deleteFavorite(fav);
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid)
+            {
+                super.onPostExecute(aVoid);
+                favoriteButton.setText(getResources().getString(R.string.title_favorite));
+                Log.d(TAG, "Delete Favorite TV Show success");
+            }
+        }.execute();
     }
 }

@@ -2,7 +2,7 @@
     <string name="app_name">RecyclerViewAPI</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="change_language_settings">Change Language</string>
 
     <string name="title_movie">Movie</string>
@@ -20,4 +20,6 @@
     <string name="title_detail">Movie/TV Show Information</string>
     <string name="title_genres">Genres</string>
     <string name="title_homepage">Homepage</string>
+    <string name="title_favorite">Favorite</string>
+    <string name="title_unfavorite">Not Favorite</string>
 </resources>

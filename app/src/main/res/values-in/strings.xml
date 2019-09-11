@@ -16,4 +16,7 @@
     <string name="title_detail">Informasi</string>
     <string name="title_homepage">Halaman Web</string>
     <string name="title_genres">Aliran</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_favorite">Favorit</string>
+    <string name="title_unfavorite">Tidak Favorit</string>
 </resources>

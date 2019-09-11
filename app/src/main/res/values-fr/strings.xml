@@ -16,4 +16,7 @@
     <string name="title_detail">Information</string>
     <string name="title_genres">Genres</string>
     <string name="title_homepage">Page d\'accueil</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_favorite">préféré</string>
+    <string name="title_unfavorite">"pas favori "</string>
 </resources>
