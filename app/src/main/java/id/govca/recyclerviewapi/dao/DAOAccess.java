@@ -29,6 +29,9 @@ public interface DAOAccess {
     @Query("SELECT count(*) FROM favorite WHERE type = 1 AND favId = :favId")
     int checkFavoriteTVShow(int favId);
 
+    @Query("SELECT count(*) FROM favorite WHERE type = :type AND thingsId = :thingsId")
+    int checkFavorite(int type, int thingsId);
+
     @Update
     void updateFavorite(Favorite favorite);
 

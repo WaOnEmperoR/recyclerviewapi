@@ -17,6 +17,6 @@
     <string name="title_genres">نوع أدبي</string>
     <string name="title_homepage">الصفحة الرئيسية</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_favorite">مفضل</string>
-    <string name="title_unfavorite">ليس المفضل</string>
+    <string name="title_favorite">تعيين كمفضل</string>
+    <string name="title_unfavorite">تعيين كما ليس المفضل</string>
 </resources>

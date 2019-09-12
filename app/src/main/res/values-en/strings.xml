@@ -17,6 +17,6 @@
     <string name="title_movie">Movie</string>
     <string name="title_tv_show">TV Show</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_favorite">Favorite</string>
-    <string name="title_unfavorite">Not Favorite</string>
+    <string name="title_favorite">Set as Favorite</string>
+    <string name="title_unfavorite">Set as Not Favorite</string>
 </resources>
