@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import id.govca.recyclerviewapi.fragment.FavoriteMovieFragment;
+import id.govca.recyclerviewapi.fragment.FavoriteTVShowFragment;
 import id.govca.recyclerviewapi.fragment.MovieFragment;
 import id.govca.recyclerviewapi.fragment.TVShowFragment;
 
@@ -27,6 +28,9 @@ public class TabsAdapter extends FragmentStatePagerAdapter {
             case 2:
                 FavoriteMovieFragment favoriteMovieFragment = new FavoriteMovieFragment();
                 return favoriteMovieFragment;
+            case 3:
+                FavoriteTVShowFragment favoriteTVShowFragment = new FavoriteTVShowFragment();
+                return favoriteTVShowFragment;
             default:
                 return null;
         }

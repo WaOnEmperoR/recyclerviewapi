@@ -20,4 +20,5 @@
     <string name="title_favorite">Set as Favorite</string>
     <string name="title_unfavorite">Set as Not Favorite</string>
     <string name="title_favorite_movie">Favorite Movie</string>
+    <string name="title_favorite_tv_show">Favorite TV Show</string>
 </resources>
