@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -43,6 +44,8 @@ public class DetailActivity extends AppCompatActivity {
     private TextView tv_name, tv_rating, tv_genres, tv_homepage, tv_year, tv_synopsis;
     private ImageView imgView_poster;
 
+    private RatingBar ratingBar;
+
     Context context = GlobalApplication.getAppContext();
 
     Button favoriteButton;
@@ -65,7 +68,8 @@ public class DetailActivity extends AppCompatActivity {
         mScrollView = findViewById(R.id.scrollViewDetail);
 
         tv_name = findViewById(R.id.tv_movie_name);
-        tv_rating = findViewById(R.id.tv_movie_rating_content);
+//        tv_rating = findViewById(R.id.tv_movie_rating_content);
+        ratingBar = findViewById(R.id.ratingBar);
         tv_genres = findViewById(R.id.tv_genres_content);
         tv_homepage = findViewById(R.id.tv_homepage_content);
         tv_year = findViewById(R.id.tv_movie_year_content);
@@ -139,7 +143,8 @@ public class DetailActivity extends AppCompatActivity {
         tv_homepage.setText(movieDetail.getHomepage());
         tv_synopsis.setText(movieDetail.getOverview());
         tv_year.setText(movieDetail.getRelease_date());
-        tv_rating.setText(String.valueOf(movieDetail.getVote_average()));
+//        tv_rating.setText(String.valueOf(movieDetail.getVote_average()));
+        ratingBar.setRating((float) movieDetail.getVote_average()/2.0f);
 
         favorite.setDate_available(movieDetail.getRelease_date());
         favorite.setHomepage(movieDetail.getHomepage());
@@ -172,7 +177,8 @@ public class DetailActivity extends AppCompatActivity {
         tv_homepage.setText(tvShowDetail.getHomepage());
         tv_synopsis.setText(tvShowDetail.getOverview());
         tv_year.setText(tvShowDetail.getFirst_air_date());
-        tv_rating.setText(String.valueOf(tvShowDetail.getVote_average()));
+//        tv_rating.setText(String.valueOf(tvShowDetail.getVote_average()));
+        ratingBar.setRating((float) tvShowDetail.getVote_average()/2.0f);
 
         favorite.setTitle(tvShowDetail.getName());
         favorite.setPoster_path(tvShowDetail.getPoster_path());
