@@ -143,7 +143,6 @@ public class DetailActivity extends AppCompatActivity {
         tv_homepage.setText(movieDetail.getHomepage());
         tv_synopsis.setText(movieDetail.getOverview());
         tv_year.setText(movieDetail.getRelease_date());
-//        tv_rating.setText(String.valueOf(movieDetail.getVote_average()));
         ratingBar.setRating((float) movieDetail.getVote_average()/2.0f);
 
         favorite.setDate_available(movieDetail.getRelease_date());
@@ -177,7 +176,6 @@ public class DetailActivity extends AppCompatActivity {
         tv_homepage.setText(tvShowDetail.getHomepage());
         tv_synopsis.setText(tvShowDetail.getOverview());
         tv_year.setText(tvShowDetail.getFirst_air_date());
-//        tv_rating.setText(String.valueOf(tvShowDetail.getVote_average()));
         ratingBar.setRating((float) tvShowDetail.getVote_average()/2.0f);
 
         favorite.setTitle(tvShowDetail.getName());

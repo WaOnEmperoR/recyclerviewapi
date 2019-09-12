@@ -19,4 +19,5 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_favorite">Setel Sebagai Favorit</string>
     <string name="title_unfavorite">Setel sebagai Tidak Favorit</string>
+    <string name="title_favorite_movie">Film Favorite</string>
 </resources>

@@ -18,10 +18,10 @@ public interface DAOAccess {
     Long insertFavorite(Favorite favorite);
 
     @Query("SELECT * FROM favorite WHERE type = 0")
-    LiveData<List<Favorite>> fetchFavoriteMovies();
+    List<Favorite> fetchFavoriteMovies();
 
     @Query("SELECT * FROM favorite WHERE type = 1")
-    LiveData<List<Favorite>> fetchFavoriteTVShows();
+    List<Favorite> fetchFavoriteTVShows();
 
     @Query("SELECT count(*) FROM favorite WHERE type = 0 AND favId = :favId")
     int checkFavoriteMovie(int favId);

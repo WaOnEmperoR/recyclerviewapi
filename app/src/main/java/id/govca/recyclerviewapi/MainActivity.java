@@ -12,11 +12,12 @@ import android.view.MenuItem;
 
 import com.google.android.material.tabs.TabLayout;
 
+import id.govca.recyclerviewapi.fragment.FavoriteMovieFragment;
 import id.govca.recyclerviewapi.fragment.MovieFragment;
 import id.govca.recyclerviewapi.fragment.TVShowFragment;
 import id.govca.recyclerviewapi.helper.TabsAdapter;
 
-public class MainActivity extends AppCompatActivity implements MovieFragment.OnFragmentInteractionListener, TVShowFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements MovieFragment.OnFragmentInteractionListener, TVShowFragment.OnFragmentInteractionListener, FavoriteMovieFragment.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
