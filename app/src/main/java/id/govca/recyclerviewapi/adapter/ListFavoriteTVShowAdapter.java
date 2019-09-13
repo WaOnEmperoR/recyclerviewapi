@@ -1,8 +1,11 @@
 package id.govca.recyclerviewapi.adapter;
 
+import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -10,16 +13,28 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.pranavpandey.android.dynamic.toasts.DynamicToast;
 
 import java.util.ArrayList;
+import java.util.concurrent.Callable;
 
+import id.govca.recyclerviewapi.DatabaseClient;
+import id.govca.recyclerviewapi.GlobalApplication;
 import id.govca.recyclerviewapi.R;
 import id.govca.recyclerviewapi.entity.Favorite;
 import id.govca.recyclerviewapi.helper.Constants;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
 
 public class ListFavoriteTVShowAdapter extends RecyclerView.Adapter<ListFavoriteTVShowAdapter.ListViewHolder>{
 
     private ArrayList<Favorite> listFavoriteTVShow = new ArrayList<>();
+
+    Context context = GlobalApplication.getAppContext();
+    private final String TAG = this.getClass().getSimpleName();
 
     private ListFavoriteTVShowAdapter.OnItemClickCallback onItemClickCallback;
     public void setOnItemClickCallback(ListFavoriteTVShowAdapter.OnItemClickCallback onItemClickCallback) {
@@ -37,13 +52,13 @@ public class ListFavoriteTVShowAdapter extends RecyclerView.Adapter<ListFavorite
     @NonNull
     @Override
     public ListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_movie, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_favorite, parent, false);
         return new ListFavoriteTVShowAdapter.ListViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull final ListViewHolder holder, int position) {
-        Favorite favorite = listFavoriteTVShow.get(position);
+        final Favorite favorite = listFavoriteTVShow.get(position);
 
         Glide
                 .with(holder.itemView.getContext())
@@ -53,6 +68,13 @@ public class ListFavoriteTVShowAdapter extends RecyclerView.Adapter<ListFavorite
         holder.tv_movie_name.setText(favorite.getTitle());
         holder.tv_year.setText(favorite.getDate_available());
         holder.tv_rating.setText(String.valueOf(favorite.getVote_average()));
+        holder.btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ObserveFavoriteItemDelete(1, favorite.getThingsId());
+                removeAt(holder.getAdapterPosition());
+            }
+        });
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,6 +82,12 @@ public class ListFavoriteTVShowAdapter extends RecyclerView.Adapter<ListFavorite
                 onItemClickCallback.onItemClicked(listFavoriteTVShow.get(holder.getAdapterPosition()));
             }
         });
+    }
+
+    public void removeAt(int position) {
+        listFavoriteTVShow.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, listFavoriteTVShow.size());
     }
 
     @Override
@@ -78,6 +106,7 @@ public class ListFavoriteTVShowAdapter extends RecyclerView.Adapter<ListFavorite
     public class ListViewHolder extends RecyclerView.ViewHolder {
         ImageView img_poster;
         TextView tv_rating, tv_year, tv_movie_name;
+        Button btnDelete;
 
         public ListViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -86,6 +115,56 @@ public class ListFavoriteTVShowAdapter extends RecyclerView.Adapter<ListFavorite
             tv_rating = itemView.findViewById(R.id.tv_show_rating);
             tv_year = itemView.findViewById(R.id.tv_show_year);
             tv_movie_name = itemView.findViewById(R.id.tv_movie_title);
+            btnDelete = itemView.findViewById(R.id.btnDelete);
         }
     }
+
+    private Observable<Void> deleteFavoriteItem(final int type, final int idThings){
+        Observable<Void> observable = Observable.fromCallable(new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                DatabaseClient.getInstance(context)
+                        .getAppDatabase()
+                        .getFavoriteDAO()
+                        .deleteFavorite(type, idThings);
+
+                return null;
+            }
+        });
+
+        return observable;
+    }
+
+    private void ObserveFavoriteItemDelete(int type, int idThings)
+    {
+        Observable<Void> deleteObservable = deleteFavoriteItem(type, idThings);
+
+        CompositeDisposable disposable = new CompositeDisposable();
+
+        disposable.add(
+                deleteObservable
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeWith(new DisposableObserver<Void>() {
+                            @Override
+                            public void onNext(Void aVoid) {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                Log.e(TAG, "Observable error : " + e.getMessage());
+                                DynamicToast.makeError(context, e.getMessage(), 5).show();
+                            }
+
+                            @Override
+                            public void onComplete() {
+                                Log.d(TAG, "onComplete from RxJava");
+                                DynamicToast.makeSuccess(context, "Finished Loading Data", 3).show();
+                                this.dispose();
+                            }
+                        })
+        );
+    }
+
 }
