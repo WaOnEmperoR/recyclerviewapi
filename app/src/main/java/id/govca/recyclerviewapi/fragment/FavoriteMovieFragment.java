@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import id.govca.recyclerviewapi.DetailActivity;
+import id.govca.recyclerviewapi.DetailFavoriteActivity;
 import id.govca.recyclerviewapi.R;
 import id.govca.recyclerviewapi.adapter.ListFavoriteMovieAdapter;
 import id.govca.recyclerviewapi.adapter.ListMovieAdapter;
@@ -113,7 +114,7 @@ public class FavoriteMovieFragment extends Fragment {
             public void onItemClicked(Favorite data) {
                 Log.d(TAG, String.valueOf(data.getThingsId()));
 
-                Intent intent = new Intent(getActivity(), DetailActivity.class);
+                Intent intent = new Intent(getActivity(), DetailFavoriteActivity.class);
                 intent.putExtra("Movie_ID", data.getThingsId());
                 intent.putExtra("Category", 0);
                 startActivity(intent);

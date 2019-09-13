@@ -15,6 +15,6 @@
         android:id="@+id/recyclerView_favorite_movie"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/item_movie"/>
+        tools:listitem="@layout/item_favorite"/>
 
 </FrameLayout>

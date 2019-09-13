@@ -10,7 +10,7 @@ import androidx.sqlite.db.SupportSQLiteOpenHelper;
 import id.govca.recyclerviewapi.dao.DAOAccess;
 import id.govca.recyclerviewapi.entity.Favorite;
 
-@Database(entities = {Favorite.class}, exportSchema = false, version = 1)
+@Database(entities = {Favorite.class}, exportSchema = false, version = 2)
 public abstract class AppDatabase extends RoomDatabase {
     public abstract DAOAccess getFavoriteDAO();
 
