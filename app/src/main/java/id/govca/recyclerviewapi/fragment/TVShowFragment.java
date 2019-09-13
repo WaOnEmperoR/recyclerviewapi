@@ -150,6 +150,7 @@ public class TVShowFragment extends Fragment {
         public void onChanged(TVShowList tvShowList) {
             if (tvShowList!=null)
             {
+                Log.d(TAG, "Calling onChange");
                 listTvShowAdapter.setData(tvShowList.getTvShowArrayList());
                 showLoading(false);
             }

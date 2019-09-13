@@ -154,6 +154,7 @@ public class MovieFragment extends Fragment {
         public void onChanged(MovieList movieList) {
             if (movieList!=null)
             {
+                Log.d(TAG, "Calling onChange");
                 listMovieAdapter.setData(movieList.getMovieArrayList());
                 showLoading(false);
             }

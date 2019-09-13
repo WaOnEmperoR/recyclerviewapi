@@ -21,8 +21,8 @@ public class ListFavoriteTVShowAdapter extends RecyclerView.Adapter<ListFavorite
 
     private ArrayList<Favorite> listFavoriteTVShow = new ArrayList<>();
 
-    private ListMovieAdapter.OnItemClickCallback onItemClickCallback;
-    public void setOnItemClickCallback(ListMovieAdapter.OnItemClickCallback onItemClickCallback) {
+    private ListFavoriteTVShowAdapter.OnItemClickCallback onItemClickCallback;
+    public void setOnItemClickCallback(ListFavoriteTVShowAdapter.OnItemClickCallback onItemClickCallback) {
         this.onItemClickCallback = onItemClickCallback;
     }
 
@@ -42,7 +42,7 @@ public class ListFavoriteTVShowAdapter extends RecyclerView.Adapter<ListFavorite
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ListViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ListViewHolder holder, int position) {
         Favorite favorite = listFavoriteTVShow.get(position);
 
         Glide
@@ -53,6 +53,13 @@ public class ListFavoriteTVShowAdapter extends RecyclerView.Adapter<ListFavorite
         holder.tv_movie_name.setText(favorite.getTitle());
         holder.tv_year.setText(favorite.getDate_available());
         holder.tv_rating.setText(String.valueOf(favorite.getVote_average()));
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onItemClickCallback.onItemClicked(listFavoriteTVShow.get(holder.getAdapterPosition()));
+            }
+        });
     }
 
     @Override

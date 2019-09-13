@@ -1,6 +1,7 @@
 package id.govca.recyclerviewapi.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -10,6 +11,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,10 +19,12 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
+import id.govca.recyclerviewapi.DetailActivity;
 import id.govca.recyclerviewapi.R;
 import id.govca.recyclerviewapi.adapter.ListFavoriteMovieAdapter;
 import id.govca.recyclerviewapi.adapter.ListMovieAdapter;
 import id.govca.recyclerviewapi.entity.Favorite;
+import id.govca.recyclerviewapi.pojo.Movie;
 import id.govca.recyclerviewapi.pojo.MovieList;
 import id.govca.recyclerviewapi.viewmodel.FavoriteMovieListViewModel;
 import id.govca.recyclerviewapi.viewmodel.MovieListViewModel;
@@ -104,6 +108,18 @@ public class FavoriteMovieFragment extends Fragment {
 
         favoriteMovieListViewModel.setListFavoriteMovies();
 
+        listFavoriteMovieAdapter.setOnItemClickCallback(new ListFavoriteMovieAdapter.OnItemClickCallback() {
+            @Override
+            public void onItemClicked(Favorite data) {
+                Log.d(TAG, String.valueOf(data.getThingsId()));
+
+                Intent intent = new Intent(getActivity(), DetailActivity.class);
+                intent.putExtra("Movie_ID", data.getThingsId());
+                intent.putExtra("Category", 0);
+                startActivity(intent);
+            }
+        });
+
         rvFavorites.setLayoutManager(new LinearLayoutManager(getContext()));
         rvFavorites.setAdapter(listFavoriteMovieAdapter);
 
@@ -115,6 +131,7 @@ public class FavoriteMovieFragment extends Fragment {
         public void onChanged(List<Favorite> favorites) {
             if (favorites!=null)
             {
+                Log.d(TAG, "Calling onChange");
                 ArrayList<Favorite> theFavorites = new ArrayList<>(favorites);
                 listFavoriteMovieAdapter.setData(theFavorites);
                 showLoading(false);

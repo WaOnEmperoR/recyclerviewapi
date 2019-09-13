@@ -1,6 +1,7 @@
 package id.govca.recyclerviewapi.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -10,6 +11,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,10 +19,15 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
+import id.govca.recyclerviewapi.DetailActivity;
 import id.govca.recyclerviewapi.R;
 import id.govca.recyclerviewapi.adapter.ListFavoriteMovieAdapter;
 import id.govca.recyclerviewapi.adapter.ListFavoriteTVShowAdapter;
+import id.govca.recyclerviewapi.adapter.ListMovieAdapter;
+import id.govca.recyclerviewapi.adapter.ListTvShowAdapter;
 import id.govca.recyclerviewapi.entity.Favorite;
+import id.govca.recyclerviewapi.pojo.Movie;
+import id.govca.recyclerviewapi.pojo.TVShow;
 import id.govca.recyclerviewapi.viewmodel.FavoriteMovieListViewModel;
 import id.govca.recyclerviewapi.viewmodel.FavoriteTVShowListViewModel;
 
@@ -103,8 +110,21 @@ public class FavoriteTVShowFragment extends Fragment {
 
         favoriteTVShowListViewModel.setListFavoriteTVShows();
 
+        listFavoriteTVShowAdapter.setOnItemClickCallback(new ListFavoriteTVShowAdapter.OnItemClickCallback() {
+            @Override
+            public void onItemClicked(Favorite data) {
+                Log.d(TAG, String.valueOf(data.getThingsId()));
+
+                Intent intent = new Intent(getActivity(), DetailActivity.class);
+                intent.putExtra("Movie_ID", data.getThingsId());
+                intent.putExtra("Category", 1);
+                startActivity(intent);
+            }
+        });
+
         rvFavorites.setLayoutManager(new LinearLayoutManager(getContext()));
         rvFavorites.setAdapter(listFavoriteTVShowAdapter);
+
 
         return view;
     }
@@ -114,6 +134,7 @@ public class FavoriteTVShowFragment extends Fragment {
         public void onChanged(List<Favorite> favorites) {
             if (favorites!=null)
             {
+                Log.d(TAG, "Calling onChange");
                 ArrayList<Favorite> theFavorites = new ArrayList<>(favorites);
                 listFavoriteTVShowAdapter.setData(theFavorites);
                 showLoading(false);
