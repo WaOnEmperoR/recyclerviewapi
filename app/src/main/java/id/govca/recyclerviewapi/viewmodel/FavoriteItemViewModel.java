@@ -1,7 +1,6 @@
 package id.govca.recyclerviewapi.viewmodel;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
@@ -9,7 +8,6 @@ import androidx.lifecycle.ViewModel;
 
 import com.pranavpandey.android.dynamic.toasts.DynamicToast;
 
-import java.util.List;
 import java.util.concurrent.Callable;
 
 import id.govca.recyclerviewapi.DatabaseClient;
@@ -21,49 +19,49 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 
-public class FavoriteTVShowListViewModel extends ViewModel {
-    private MutableLiveData<List<Favorite>> listFavoriteTVShows = new MutableLiveData<>();
+public class FavoriteItemViewModel extends ViewModel {
+
+    private MutableLiveData<Favorite> favoriteMutableLiveData = new MutableLiveData<>();
     private CompositeDisposable disposable = new CompositeDisposable();
     private final String TAG = this.getClass().getSimpleName();
 
     Context context = GlobalApplication.getAppContext();
 
-    public MutableLiveData<List<Favorite>> getListFavoriteTVShows() {
-        return listFavoriteTVShows;
+    public MutableLiveData<Favorite> getFavoriteMutableLiveData() {
+        return favoriteMutableLiveData;
     }
 
-    public void setListFavoriteTVShows() {
-        Log.d(TAG, "Calling Set List Favorite TV Shows");
-
-        ObserveListFavorites();
+    public void setFavoriteMutableLiveData(int type, int idThings) {
+        Log.d(TAG, "Calling Set Favorite Detail");
+        ObserveFavoriteItem(type, idThings);
     }
 
-    private Observable<List<Favorite>> getFavorites(){
-        Observable<List<Favorite>> observable = Observable.fromCallable(new Callable<List<Favorite>>() {
+    private Observable<Favorite> getFavoriteItem(final int type, final int idThings){
+        Observable<Favorite> observable = Observable.fromCallable(new Callable<Favorite>() {
             @Override
-            public List<Favorite> call() throws Exception {
+            public Favorite call() throws Exception {
                 return DatabaseClient.getInstance(context)
                         .getAppDatabase()
                         .getFavoriteDAO()
-                        .fetchFavoriteTVShows();
+                        .fetchSingleFavorite(type, idThings);
             }
         });
 
         return observable;
     }
 
-    private void ObserveListFavorites()
+    private void ObserveFavoriteItem(int type, int idThings)
     {
-        Observable<List<Favorite>> favoritesObservable = getFavorites();
+        Observable<Favorite> favoriteObservable = getFavoriteItem(type, idThings);
 
         disposable.add(
-                favoritesObservable
+                favoriteObservable
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeWith(new DisposableObserver<List<Favorite>>() {
+                    .subscribeWith(new DisposableObserver<Favorite>() {
                         @Override
-                        public void onNext(List<Favorite> favorites) {
-                            listFavoriteTVShows.setValue(favorites);
+                        public void onNext(Favorite favorite) {
+                            getFavoriteMutableLiveData().setValue(favorite);
                         }
 
                         @Override
@@ -81,5 +79,6 @@ public class FavoriteTVShowListViewModel extends ViewModel {
                     })
         );
     }
+
 
 }

@@ -36,7 +36,6 @@ public class FavoriteMovieListViewModel extends ViewModel {
     public void setListFavoriteMovies() {
         Log.d(TAG, "Calling Set List Favorite Movies");
 
-//        new GetFavoriteMovie().execute();
         ObserveListFavorites();
     }
 
@@ -84,20 +83,4 @@ public class FavoriteMovieListViewModel extends ViewModel {
         );
     }
 
-    private class GetFavoriteMovie extends AsyncTask<Void, Void, List<Favorite>>{
-
-        @Override
-        protected List<Favorite> doInBackground(Void... voids) {
-            return DatabaseClient.getInstance(context)
-                    .getAppDatabase()
-                    .getFavoriteDAO()
-                    .fetchFavoriteMovies();
-        }
-
-        @Override
-        protected void onPostExecute(List<Favorite> favorites) {
-            super.onPostExecute(favorites);
-            getListFavoriteMovies().setValue(favorites);
-        }
-    }
 }

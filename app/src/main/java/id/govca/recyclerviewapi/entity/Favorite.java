@@ -28,6 +28,8 @@ public class Favorite implements Serializable {
     private String poster_path;
     @ColumnInfo(name = "homepage")
     private String homepage;
+    @ColumnInfo(name = "synopsis")
+    private String synopsis;
 
     public int getFavId() {
         return favId;
@@ -91,5 +93,13 @@ public class Favorite implements Serializable {
 
     public void setHomepage(String homepage) {
         this.homepage = homepage;
+    }
+
+    public String getSynopsis() {
+        return synopsis;
+    }
+
+    public void setSynopsis(String synopsis) {
+        this.synopsis = synopsis;
     }
 }

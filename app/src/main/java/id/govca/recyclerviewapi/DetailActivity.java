@@ -41,7 +41,7 @@ public class DetailActivity extends AppCompatActivity {
     private View mScrollView;
 
     private int idThings, category;
-    private TextView tv_name, tv_rating, tv_genres, tv_homepage, tv_year, tv_synopsis;
+    private TextView tv_name, tv_genres, tv_homepage, tv_year, tv_synopsis;
     private ImageView imgView_poster;
 
     private RatingBar ratingBar;
@@ -68,7 +68,6 @@ public class DetailActivity extends AppCompatActivity {
         mScrollView = findViewById(R.id.scrollViewDetail);
 
         tv_name = findViewById(R.id.tv_movie_name);
-//        tv_rating = findViewById(R.id.tv_movie_rating_content);
         ratingBar = findViewById(R.id.ratingBar);
         tv_genres = findViewById(R.id.tv_genres_content);
         tv_homepage = findViewById(R.id.tv_homepage_content);
@@ -152,6 +151,7 @@ public class DetailActivity extends AppCompatActivity {
         favorite.setPoster_path(movieDetail.getPoster_path());
         favorite.setTitle(movieDetail.getOriginal_title());
         favorite.setVote_average(movieDetail.getVote_average());
+        favorite.setSynopsis(movieDetail.getOverview());
 
         Glide
                 .with(getBaseContext())
@@ -185,6 +185,7 @@ public class DetailActivity extends AppCompatActivity {
         favorite.setThingsId(tvShowDetail.getId());
         favorite.setHomepage(tvShowDetail.getHomepage());
         favorite.setDate_available(tvShowDetail.getFirst_air_date());
+        favorite.setSynopsis(tvShowDetail.getOverview());
 
         Glide
                 .with(getBaseContext())

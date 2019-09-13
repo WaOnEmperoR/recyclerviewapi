@@ -23,11 +23,8 @@ public interface DAOAccess {
     @Query("SELECT * FROM favorite WHERE type = 1")
     List<Favorite> fetchFavoriteTVShows();
 
-    @Query("SELECT count(*) FROM favorite WHERE type = 0 AND favId = :favId")
-    int checkFavoriteMovie(int favId);
-
-    @Query("SELECT count(*) FROM favorite WHERE type = 1 AND favId = :favId")
-    int checkFavoriteTVShow(int favId);
+    @Query("SELECT * FROM favorite WHERE type = :type AND thingsId = :thingsId")
+    Favorite fetchSingleFavorite(int type, int thingsId);
 
     @Query("SELECT count(*) FROM favorite WHERE type = :type AND thingsId = :thingsId")
     int checkFavorite(int type, int thingsId);
