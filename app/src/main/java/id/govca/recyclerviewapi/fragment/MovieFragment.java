@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.SearchView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -14,13 +16,18 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.pranavpandey.android.dynamic.toasts.DynamicToast;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -107,6 +114,8 @@ public class MovieFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_movie, container, false);
         mProgressView = view.findViewById(R.id.progressBarMovie);
+
+        setHasOptionsMenu(true);
 
         showLoading(true);
 
@@ -206,5 +215,64 @@ public class MovieFragment extends Fragment {
         } else {
             mProgressView.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.fragment_menu, menu);
+        MenuItem searchItem = menu.findItem(R.id.searchItem);
+
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setQueryHint("Search Movies");
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                newText = newText.toLowerCase();
+                listMovieAdapter.setFilterText(newText);
+
+                return true;
+            }
+        });
+
+//        SearchView searchView  = new SearchView(getActivity());
+//        searchView.setQueryHint("Cari Sesuatu....");
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+//                newText = newText.toLowerCase();
+//                ArrayList<Movie> movieFilter = new ArrayList<>();
+//
+//                Log.d(TAG, "onQuery");
+//
+//                for (Movie movie : listMovieAdapter.getListMovie()){
+//                    String movieName = movie.getTitle().toLowerCase();
+//                    if (movieName.contains(newText)){
+//                        movieFilter.add(movie);
+//                    }
+//                }
+//
+//                listMovieAdapter.setFilter(movieFilter);
+//
+//                return true;
+//            }
+//        });
+//        searchItem.setActionView(searchView);
+
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return super.onOptionsItemSelected(item);
     }
 }

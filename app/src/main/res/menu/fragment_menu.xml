@@ -6,9 +6,9 @@
         android:title="@string/change_language_settings"
         app:showAsAction="never"/>
 
-<!--    <item android:id="@+id/searchItem"-->
-<!--        android:title="Cari"-->
-<!--        android:orderInCategory="1"-->
-<!--        app:actionViewClass="androidx.appcompat.widget.SearchView"-->
-<!--        app:showAsAction="always|collapseActionView"/>-->
+    <item android:id="@+id/searchItem"
+        android:title="Cari"
+        android:orderInCategory="1"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        app:showAsAction="always|collapseActionView"/>
 </menu>

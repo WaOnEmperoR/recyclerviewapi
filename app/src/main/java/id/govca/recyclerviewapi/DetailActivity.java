@@ -287,6 +287,13 @@ public class DetailActivity extends AppCompatActivity {
                 favoriteButton.setTextColor(getResources().getColor(R.color.colorWhite));
                 DynamicToast.makeSuccess(context, "Set as Favorite Success", 3).show();
                 Log.d(TAG, "Set Favorite success");
+                favoriteButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        UnsetFavorite unsetFavorite = new UnsetFavorite();
+                        unsetFavorite.execute();
+                    }
+                });
             }
             else
             {
@@ -315,6 +322,13 @@ public class DetailActivity extends AppCompatActivity {
             favoriteButton.setTextColor(getResources().getColor(R.color.colorGold));
             DynamicToast.makeSuccess(context, "Delete Favorite Success", 3).show();
             Log.d(TAG, "Delete Favorite Success");
+            favoriteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    SetFavorite setFavorite = new SetFavorite();
+                    setFavorite.execute();
+                }
+            });
         }
     }
 

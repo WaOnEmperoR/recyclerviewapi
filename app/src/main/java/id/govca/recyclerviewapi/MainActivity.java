@@ -1,26 +1,32 @@
 package id.govca.recyclerviewapi;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.google.android.material.tabs.TabLayout;
+
+import java.util.ArrayList;
 
 import id.govca.recyclerviewapi.fragment.FavoriteMovieFragment;
 import id.govca.recyclerviewapi.fragment.FavoriteTVShowFragment;
 import id.govca.recyclerviewapi.fragment.MovieFragment;
 import id.govca.recyclerviewapi.fragment.TVShowFragment;
 import id.govca.recyclerviewapi.helper.TabsAdapter;
+import id.govca.recyclerviewapi.pojo.Movie;
 import id.govca.recyclerviewapi.viewmodel.FavoriteTVShowListViewModel;
 
 public class MainActivity extends AppCompatActivity implements MovieFragment.OnFragmentInteractionListener, TVShowFragment.OnFragmentInteractionListener, FavoriteMovieFragment.OnFragmentInteractionListener, FavoriteTVShowFragment.OnFragmentInteractionListener {
 
+    private final String TAG = this.getClass().getSimpleName();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

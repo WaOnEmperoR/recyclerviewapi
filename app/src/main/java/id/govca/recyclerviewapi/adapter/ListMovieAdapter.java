@@ -19,6 +19,7 @@ import id.govca.recyclerviewapi.pojo.Movie;
 
 public class ListMovieAdapter extends RecyclerView.Adapter<ListMovieAdapter.ListViewHolder>{
     private ArrayList<Movie> listMovie = new ArrayList<>();
+    private ArrayList<Movie> listMovieBackup = new ArrayList<>();
 
     private OnItemClickCallback onItemClickCallback;
     public void setOnItemClickCallback(OnItemClickCallback onItemClickCallback) {
@@ -33,9 +34,14 @@ public class ListMovieAdapter extends RecyclerView.Adapter<ListMovieAdapter.List
     {
     }
 
+    public ArrayList<Movie> getListMovie(){
+        return listMovie;
+    }
+
     public void setData(ArrayList<Movie> items) {
         listMovie.clear();
         listMovie.addAll(items);
+        listMovieBackup.addAll(items);
         notifyDataSetChanged();
     }
 
@@ -84,5 +90,30 @@ public class ListMovieAdapter extends RecyclerView.Adapter<ListMovieAdapter.List
             tv_year = itemView.findViewById(R.id.tv_show_year);
             tv_movie_name = itemView.findViewById(R.id.tv_movie_title);
         }
+    }
+
+    public void setFilterText(String filterText){
+        listMovie.clear();
+
+        filterText = filterText.toLowerCase();
+        ArrayList<Movie> movieFilter = new ArrayList<>();
+
+        if (filterText.isEmpty())
+        {
+            listMovie.addAll(this.listMovieBackup);
+        }
+        else
+        {
+            for (Movie movie : this.listMovieBackup){
+                String movieName = movie.getTitle().toLowerCase();
+                if (movieName.contains(filterText)){
+                    movieFilter.add(movie);
+                }
+            }
+
+            listMovie.addAll(movieFilter);
+        }
+
+        notifyDataSetChanged();
     }
 }
