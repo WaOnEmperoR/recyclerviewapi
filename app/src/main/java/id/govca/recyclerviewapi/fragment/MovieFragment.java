@@ -239,35 +239,6 @@ public class MovieFragment extends Fragment {
             }
         });
 
-//        SearchView searchView  = new SearchView(getActivity());
-//        searchView.setQueryHint("Cari Sesuatu....");
-//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//            @Override
-//            public boolean onQueryTextSubmit(String query) {
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onQueryTextChange(String newText) {
-//                newText = newText.toLowerCase();
-//                ArrayList<Movie> movieFilter = new ArrayList<>();
-//
-//                Log.d(TAG, "onQuery");
-//
-//                for (Movie movie : listMovieAdapter.getListMovie()){
-//                    String movieName = movie.getTitle().toLowerCase();
-//                    if (movieName.contains(newText)){
-//                        movieFilter.add(movie);
-//                    }
-//                }
-//
-//                listMovieAdapter.setFilter(movieFilter);
-//
-//                return true;
-//            }
-//        });
-//        searchItem.setActionView(searchView);
-
         super.onCreateOptionsMenu(menu, inflater);
     }
 

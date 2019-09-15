@@ -18,12 +18,11 @@ import com.pranavpandey.android.dynamic.toasts.DynamicToast;
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
 
-import id.govca.recyclerviewapi.DatabaseClient;
+import id.govca.recyclerviewapi.helper.DatabaseClient;
 import id.govca.recyclerviewapi.GlobalApplication;
 import id.govca.recyclerviewapi.R;
 import id.govca.recyclerviewapi.entity.Favorite;
 import id.govca.recyclerviewapi.helper.Constants;
-import id.govca.recyclerviewapi.pojo.Movie;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -123,7 +122,7 @@ public class ListFavoriteMovieAdapter extends RecyclerView.Adapter<ListFavoriteM
     private Observable<Void> deleteFavoriteItem(final int type, final int idThings){
          Observable<Void> observable = Observable.fromCallable(new Callable<Void>() {
              @Override
-             public Void call() throws Exception {
+             public Void call() {
                  DatabaseClient.getInstance(context)
                          .getAppDatabase()
                          .getFavoriteDAO()

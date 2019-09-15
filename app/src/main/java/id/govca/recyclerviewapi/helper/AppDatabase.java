@@ -1,4 +1,4 @@
-package id.govca.recyclerviewapi;
+package id.govca.recyclerviewapi.helper;
 
 import androidx.annotation.NonNull;
 import androidx.room.Database;

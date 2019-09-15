@@ -1,7 +1,6 @@
 package id.govca.recyclerviewapi.viewmodel;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
@@ -12,7 +11,7 @@ import com.pranavpandey.android.dynamic.toasts.DynamicToast;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import id.govca.recyclerviewapi.DatabaseClient;
+import id.govca.recyclerviewapi.helper.DatabaseClient;
 import id.govca.recyclerviewapi.GlobalApplication;
 import id.govca.recyclerviewapi.entity.Favorite;
 import io.reactivex.Observable;
@@ -27,7 +26,7 @@ public class FavoriteMovieListViewModel extends ViewModel {
     private CompositeDisposable disposable = new CompositeDisposable();
     private final String TAG = this.getClass().getSimpleName();
 
-    Context context = GlobalApplication.getAppContext();
+    private Context context = GlobalApplication.getAppContext();
 
     public MutableLiveData<List<Favorite>> getListFavoriteMovies() {
         return listFavoriteMovies;
@@ -42,7 +41,7 @@ public class FavoriteMovieListViewModel extends ViewModel {
     private Observable<List<Favorite>> getFavorites(){
         Observable<List<Favorite>> observable = Observable.fromCallable(new Callable<List<Favorite>>() {
             @Override
-            public List<Favorite> call() throws Exception {
+            public List<Favorite> call() {
                 return DatabaseClient.getInstance(context)
                         .getAppDatabase()
                         .getFavoriteDAO()

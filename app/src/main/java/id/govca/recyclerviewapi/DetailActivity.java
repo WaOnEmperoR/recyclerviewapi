@@ -1,9 +1,7 @@
 package id.govca.recyclerviewapi;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Context;
@@ -28,6 +26,7 @@ import java.util.StringJoiner;
 
 import id.govca.recyclerviewapi.entity.Favorite;
 import id.govca.recyclerviewapi.helper.Constants;
+import id.govca.recyclerviewapi.helper.DatabaseClient;
 import id.govca.recyclerviewapi.pojo.Genre;
 import id.govca.recyclerviewapi.pojo.MovieDetail;
 import id.govca.recyclerviewapi.pojo.TVShowDetail;
@@ -132,9 +131,8 @@ public class DetailActivity extends AppCompatActivity {
     private void pseudoAdapterMovie(final MovieDetail movieDetail){
         StringJoiner joiner = new StringJoiner(", ");
         Genre[] genres = movieDetail.getGenres();
-        for (int i=0; i<genres.length; i++)
-        {
-            joiner.add(genres[i].getName());
+        for (Genre genre : genres) {
+            joiner.add(genre.getName());
         }
 
         tv_name.setText(movieDetail.getOriginal_title());
@@ -166,9 +164,8 @@ public class DetailActivity extends AppCompatActivity {
     {
         StringJoiner joiner = new StringJoiner(", ");
         Genre[] genres = tvShowDetail.getGenres();
-        for (int i=0; i<genres.length; i++)
-        {
-            joiner.add(genres[i].getName());
+        for (Genre genre : genres) {
+            joiner.add(genre.getName());
         }
 
         tv_name.setText(tvShowDetail.getName());

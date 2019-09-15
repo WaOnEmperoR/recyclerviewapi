@@ -18,7 +18,7 @@ import com.pranavpandey.android.dynamic.toasts.DynamicToast;
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
 
-import id.govca.recyclerviewapi.DatabaseClient;
+import id.govca.recyclerviewapi.helper.DatabaseClient;
 import id.govca.recyclerviewapi.GlobalApplication;
 import id.govca.recyclerviewapi.R;
 import id.govca.recyclerviewapi.entity.Favorite;
@@ -122,7 +122,7 @@ public class ListFavoriteTVShowAdapter extends RecyclerView.Adapter<ListFavorite
     private Observable<Void> deleteFavoriteItem(final int type, final int idThings){
         Observable<Void> observable = Observable.fromCallable(new Callable<Void>() {
             @Override
-            public Void call() throws Exception {
+            public Void call() {
                 DatabaseClient.getInstance(context)
                         .getAppDatabase()
                         .getFavoriteDAO()

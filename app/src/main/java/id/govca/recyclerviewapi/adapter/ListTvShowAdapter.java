@@ -20,6 +20,7 @@ import id.govca.recyclerviewapi.pojo.TVShow;
 
 public class ListTvShowAdapter extends RecyclerView.Adapter<ListTvShowAdapter.ListViewHolder>{
     private ArrayList<TVShow> listTvShow = new ArrayList<>();
+    private ArrayList<TVShow> listTvShowBackup = new ArrayList<>();
 
     private ListTvShowAdapter.OnItemClickCallback onItemClickCallback;
     public void setOnItemClickCallback(ListTvShowAdapter.OnItemClickCallback onItemClickCallback) {
@@ -33,6 +34,7 @@ public class ListTvShowAdapter extends RecyclerView.Adapter<ListTvShowAdapter.Li
     public void setData(ArrayList<TVShow> items) {
         listTvShow.clear();
         listTvShow.addAll(items);
+        listTvShowBackup.addAll(items);
         notifyDataSetChanged();
     }
 
@@ -90,5 +92,30 @@ public class ListTvShowAdapter extends RecyclerView.Adapter<ListTvShowAdapter.Li
             tv_year = itemView.findViewById(R.id.tv_show_year);
             tv_movie_name = itemView.findViewById(R.id.tv_movie_title);
         }
+    }
+
+    public void setFilterText(String filterText){
+        listTvShow.clear();
+
+        filterText = filterText.toLowerCase();
+        ArrayList<TVShow> TvShowFilter = new ArrayList<>();
+
+        if (filterText.isEmpty())
+        {
+            listTvShow.addAll(this.listTvShowBackup);
+        }
+        else
+        {
+            for (TVShow tvShow : this.listTvShowBackup){
+                String tvShowName = tvShow.getName().toLowerCase();
+                if (tvShowName.contains(filterText)){
+                    TvShowFilter.add(tvShow);
+                }
+            }
+
+            listTvShow.addAll(TvShowFilter);
+        }
+
+        notifyDataSetChanged();
     }
 }
