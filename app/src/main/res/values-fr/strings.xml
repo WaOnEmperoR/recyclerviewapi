@@ -21,4 +21,7 @@
     <string name="title_unfavorite">définir comme pas favori</string>
     <string name="title_favorite_movie">film préféré</string>
     <string name="title_favorite_tv_show">émission de télévision préférée</string>
+    <string name="add_widget">ajouter un widget</string>
+    <string name="appwidget_text">exemple</string>
+    <string name="empty_text">pas de données</string>
 </resources>

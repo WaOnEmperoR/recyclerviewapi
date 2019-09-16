@@ -21,4 +21,7 @@
     <string name="title_unfavorite">تعيين كما ليس المفضل</string>
     <string name="title_favorite_movie">الفيلم المفضل</string>
     <string name="title_favorite_tv_show">المفضل تلفزيوني</string>
+    <string name="appwidget_text">مثال</string>
+    <string name="add_widget">إضافة القطعة</string>
+    <string name="empty_text">لايوجد بيانات</string>
 </resources>
