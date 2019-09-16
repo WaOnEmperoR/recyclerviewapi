@@ -4,24 +4,16 @@
     <string name="change_language_settings">غير اللغة</string>
     <string name="title_movie">فيلم</string>
     <string name="title_tv_show">برنامج تلفزيوني</string>
-    <string name="movie_detail">التفاصيل</string>
-    <string name="movie_director">مدير</string>
-    <string name="movie_name">اسم</string>
-    <string name="movie_poster">الملصق</string>
-    <string name="movie_prod_house">بيت الانتاج</string>
     <string name="movie_synopsis">ملخص</string>
-    <string name="movie_type">نوع</string>
     <string name="movie_year">يوم الاصدار</string>
     <string name="title_detail">معلومات</string>
     <string name="movie_rating">تقييم</string>
     <string name="title_genres">نوع أدبي</string>
     <string name="title_homepage">الصفحة الرئيسية</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_favorite">تعيين كمفضل</string>
     <string name="title_unfavorite">تعيين كما ليس المفضل</string>
     <string name="title_favorite_movie">الفيلم المفضل</string>
     <string name="title_favorite_tv_show">المفضل تلفزيوني</string>
     <string name="appwidget_text">مثال</string>
-    <string name="add_widget">إضافة القطعة</string>
     <string name="empty_text">لايوجد بيانات</string>
 </resources>

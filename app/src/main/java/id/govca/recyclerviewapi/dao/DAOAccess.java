@@ -23,6 +23,9 @@ public interface DAOAccess {
     @Query("SELECT * FROM favorite WHERE type = 1")
     List<Favorite> fetchFavoriteTVShows();
 
+    @Query("SELECT * FROM favorite")
+    List<Favorite> fetchFavoriteAll();
+
     @Query("SELECT * FROM favorite WHERE type = :type AND thingsId = :thingsId")
     Favorite fetchSingleFavorite(int type, int thingsId);
 

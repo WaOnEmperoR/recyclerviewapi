@@ -5,23 +5,15 @@
     <string name="title_movie">Film</string>
     <string name="title_tv_show">émission de télévision</string>
     <string name="movie_year">date de sortie</string>
-    <string name="movie_type">type</string>
     <string name="movie_synopsis">synopsis</string>
-    <string name="movie_director">réalisateur</string>
-    <string name="movie_name">nom du film</string>
-    <string name="movie_poster">affiche</string>
-    <string name="movie_detail">détail du film</string>
-    <string name="movie_prod_house">fait maison</string>
     <string name="movie_rating">Évaluation</string>
     <string name="title_detail">Information</string>
     <string name="title_genres">Genres</string>
     <string name="title_homepage">Page d\'accueil</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_favorite">définir comme favori</string>
     <string name="title_unfavorite">définir comme pas favori</string>
     <string name="title_favorite_movie">film préféré</string>
     <string name="title_favorite_tv_show">émission de télévision préférée</string>
-    <string name="add_widget">ajouter un widget</string>
     <string name="appwidget_text">exemple</string>
     <string name="empty_text">pas de données</string>
 </resources>

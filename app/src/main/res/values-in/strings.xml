@@ -5,23 +5,15 @@
     <string name="title_movie">Film</string>
     <string name="title_tv_show">Acara TV</string>
     <string name="movie_year">Tanggal Rilis</string>
-    <string name="movie_type">Jenis</string>
     <string name="movie_synopsis">Sinopsis</string>
-    <string name="movie_prod_house">Rumah Produksi</string>
-    <string name="movie_poster">Poster</string>
-    <string name="movie_name">Nama</string>
-    <string name="movie_director">Sutradara</string>
-    <string name="movie_detail">Detail Film</string>
     <string name="movie_rating">Rating</string>
     <string name="title_detail">Informasi</string>
     <string name="title_homepage">Halaman Web</string>
     <string name="title_genres">Aliran</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_favorite">Setel Sebagai Favorit</string>
     <string name="title_unfavorite">Setel sebagai Tidak Favorit</string>
     <string name="title_favorite_movie">Film Favorite</string>
     <string name="title_favorite_tv_show">Acara TV Favorit</string>
     <string name="appwidget_text">CONTOH</string>
-    <string name="add_widget">Tambah Widget</string>
     <string name="empty_text">Tak ada data</string>
 </resources>

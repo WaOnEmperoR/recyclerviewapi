@@ -6,9 +6,11 @@ import id.govca.recyclerviewapi.pojo.TVShowDetail;
 import id.govca.recyclerviewapi.pojo.TVShowList;
 import io.reactivex.Observable;
 
+import okhttp3.ResponseBody;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+import retrofit2.http.Url;
 
 public interface ApiInterface {
 
@@ -29,4 +31,8 @@ public interface ApiInterface {
     Observable<TVShowDetail> RxTVShowDetails(@Path("Id") int id,
                                              @Query("api_key") String apiKey,
                                              @Query("language") String language);
+
+    @GET
+    Observable<ResponseBody> RxGetImage(@Url String imgUrl);
+
 }
