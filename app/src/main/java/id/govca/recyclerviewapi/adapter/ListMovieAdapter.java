@@ -92,28 +92,4 @@ public class ListMovieAdapter extends RecyclerView.Adapter<ListMovieAdapter.List
         }
     }
 
-    public void setFilterText(String filterText){
-        listMovie.clear();
-
-        filterText = filterText.toLowerCase();
-        ArrayList<Movie> movieFilter = new ArrayList<>();
-
-        if (filterText.isEmpty())
-        {
-            listMovie.addAll(this.listMovieBackup);
-        }
-        else
-        {
-            for (Movie movie : this.listMovieBackup){
-                String movieName = movie.getTitle().toLowerCase();
-                if (movieName.contains(filterText)){
-                    movieFilter.add(movie);
-                }
-            }
-
-            listMovie.addAll(movieFilter);
-        }
-
-        notifyDataSetChanged();
-    }
 }

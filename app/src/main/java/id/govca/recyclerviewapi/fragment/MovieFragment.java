@@ -74,6 +74,7 @@ public class MovieFragment extends Fragment {
     private RecyclerView rvMovies;
 
     private OnFragmentInteractionListener mListener;
+    private String param_lang;
 
     private MovieListViewModel movieListViewModel;
 
@@ -130,7 +131,7 @@ public class MovieFragment extends Fragment {
 
         Locale current = getResources().getConfiguration().locale;
 
-        String param_lang = current.getLanguage() + "-" + current.getCountry();
+        param_lang = current.getLanguage() + "-" + current.getCountry();
         if (param_lang.equals("in-ID"))
         {
             param_lang = "id-ID";
@@ -232,8 +233,10 @@ public class MovieFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                newText = newText.toLowerCase();
-                listMovieAdapter.setFilterText(newText);
+                if (!newText.isEmpty())
+                    movieListViewModel.setSearchMovies(newText, param_lang);
+                else
+                    movieListViewModel.setListMovies(param_lang);
 
                 return true;
             }

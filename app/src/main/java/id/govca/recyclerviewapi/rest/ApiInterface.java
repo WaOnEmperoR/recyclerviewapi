@@ -18,9 +18,19 @@ public interface ApiInterface {
     Observable<MovieList> RxGetMovieList(@Query("api_key") String apiKey,
                                          @Query("language") String language);
 
+    @GET("search/movie")
+    Observable<MovieList> RxSearchMovies(@Query("query") String query,
+                                         @Query("api_key") String apiKey,
+                                         @Query("language") String language);
+
     @GET("discover/tv")
     Observable<TVShowList> RxGetTVShowList(@Query("api_key") String apiKey,
                                            @Query("language") String language);
+
+    @GET("search/tv")
+    Observable<TVShowList> RxSearchTVShows(@Query("query") String query,
+                                         @Query("api_key") String apiKey,
+                                         @Query("language") String language);
 
     @GET("movie/{Id}")
     Observable<MovieDetail> RxMovieDetails(@Path("Id") int id,
@@ -32,7 +42,5 @@ public interface ApiInterface {
                                              @Query("api_key") String apiKey,
                                              @Query("language") String language);
 
-    @GET
-    Observable<ResponseBody> RxGetImage(@Url String imgUrl);
 
 }

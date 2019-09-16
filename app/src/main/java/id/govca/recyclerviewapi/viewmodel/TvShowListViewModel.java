@@ -36,6 +36,11 @@ public class TvShowListViewModel extends ViewModel {
         ObserveTVShow(param_lang);
     }
 
+    public void setSearchTVShows(String query, String param_lang){
+        Log.d(TAG, "Calling Set Search TV Shows");
+        ObserveSearchTVShows(query, param_lang);
+    }
+
     private Observable<TVShowList> getTVShowListObs(String param_lang)
     {
         final ApiInterface mApiService = ApiClient.getClient().create(ApiInterface.class);
@@ -77,6 +82,49 @@ public class TvShowListViewModel extends ViewModel {
                             this.dispose();
                         }
                     })
+        );
+    }
+
+    private Observable<TVShowList> searchTVShowListObs(String query, String param_lang){
+        final ApiInterface mApiService = ApiClient.getClient().create(ApiInterface.class);
+
+        return mApiService.RxSearchTVShows(query, Constants.API_KEY, param_lang)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    private void ObserveSearchTVShows(String query, String param_lang)
+    {
+        Observable<TVShowList> tvShowListObservable = searchTVShowListObs(query, param_lang);
+
+        disposable.add(
+                tvShowListObservable
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeWith(new DisposableObserver<TVShowList>() {
+                            @Override
+                            public void onNext(TVShowList tvShowList) {
+                                for (int i=0; i<tvShowList.getTvShowArrayList().size(); i++)
+                                {
+                                    Log.d(TAG, tvShowList.getTvShowArrayList().get(i).getName());
+                                }
+
+                                listTvShows.setValue(tvShowList);
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                Log.e(TAG, "Observable error : " + e.getMessage());
+                                DynamicToast.makeError(context, e.getMessage(), 5).show();
+                            }
+
+                            @Override
+                            public void onComplete() {
+                                Log.d(TAG, "onComplete from RxJava");
+                                DynamicToast.makeSuccess(context, "Finished Loading Data", 3).show();
+                                this.dispose();
+                            }
+                        })
         );
     }
 }
