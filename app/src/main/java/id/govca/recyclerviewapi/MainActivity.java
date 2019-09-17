@@ -28,6 +28,7 @@ import id.govca.recyclerviewapi.viewmodel.FavoriteTVShowListViewModel;
 public class MainActivity extends AppCompatActivity implements MovieFragment.OnFragmentInteractionListener, TVShowFragment.OnFragmentInteractionListener, FavoriteMovieFragment.OnFragmentInteractionListener, FavoriteTVShowFragment.OnFragmentInteractionListener {
 
     private final String TAG = this.getClass().getSimpleName();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +36,8 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.OnF
 
         AlarmReceiver alarmReceiver = new AlarmReceiver();
 
-        alarmReceiver.setRepeatingReminderAlarm(this, AlarmReceiver.TYPE_REMINDER, "09:12", "Bukalah Aplikasi Movie Anda");
+        alarmReceiver.setRepeatingReminderAlarm(this, AlarmReceiver.TYPE_REMINDER, "07:00", "Bukalah Aplikasi Movie Anda");
+        alarmReceiver.setRepeatingReminderAlarm(this, AlarmReceiver.TYPE_RELEASE_TODAY, "08:00", "");
 
         final TabLayout tabLayout = findViewById(R.id.tabLayout2);
         final ViewPager viewPager = findViewById(R.id.viewPager);

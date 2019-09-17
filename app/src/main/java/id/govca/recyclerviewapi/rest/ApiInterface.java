@@ -18,6 +18,7 @@ public interface ApiInterface {
     Observable<MovieList> RxGetMovieList(@Query("api_key") String apiKey,
                                          @Query("language") String language);
 
+    @GET("discover/movie")
     Observable<MovieList> RxGetMoviesToday(@Query("api_key") String apiKey,
                                            @Query("primary_release_date.gte") String gte,
                                            @Query("primary_release_date.lte") String lte);

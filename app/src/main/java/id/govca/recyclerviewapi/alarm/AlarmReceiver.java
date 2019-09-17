@@ -14,16 +14,29 @@ import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
+import java.util.StringJoiner;
 
 import id.govca.recyclerviewapi.R;
+import id.govca.recyclerviewapi.helper.Constants;
+import id.govca.recyclerviewapi.pojo.MovieList;
+import id.govca.recyclerviewapi.rest.ApiClient;
+import id.govca.recyclerviewapi.rest.ApiInterface;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
 
 public class AlarmReceiver extends BroadcastReceiver {
 
@@ -35,6 +48,9 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     public static final String TYPE_REMINDER = "ReminderAlarm";
     public static final String TYPE_RELEASE_TODAY = "ReleaseTodayAlarm";
+    private CompositeDisposable disposable = new CompositeDisposable();
+
+    private MovieList movieList = new MovieList();
 
     private final String TAG = this.getClass().getSimpleName();
 
@@ -50,9 +66,15 @@ public class AlarmReceiver extends BroadcastReceiver {
         String title = type.equalsIgnoreCase(TYPE_REMINDER) ? TYPE_REMINDER : TYPE_RELEASE_TODAY;
         int notifId = type.equalsIgnoreCase(TYPE_REMINDER) ? ID_REMINDER : ID_RELEASE_TODAY;
 
-        Log.d(TAG, "onReceive");
+        Log.d(TAG, "onReceive from type : " + title);
 
-        showAlarmNotification(context, title, message, notifId);
+        if (notifId == ID_RELEASE_TODAY){
+            ObserveTodayMovies(context, title, notifId);
+        }
+        else {
+            showAlarmNotification(context, title, message, notifId);
+        }
+
     }
 
     private void showAlarmNotification(Context context, String title, String message, int notifId) {
@@ -90,10 +112,10 @@ public class AlarmReceiver extends BroadcastReceiver {
         if (notificationManagerCompat != null) {
             notificationManagerCompat.notify(notifId, notification);
         }
-
     }
+
     public void setRepeatingReminderAlarm(Context context, String type, String time, String message) {
-        Log.d(TAG, "Set Repeating");
+        Log.d(TAG, "Set Repeating : " + type);
         if (isDateInvalid(time, TIME_FORMAT)) {
             return;
         }
@@ -129,8 +151,61 @@ public class AlarmReceiver extends BroadcastReceiver {
             df.parse(date);
             return false;
         } catch (ParseException e) {
-            Log.e(TAG, e.getMessage());
+            Log.e(TAG, "Haha " + e.getMessage());
             return true;
         }
     }
+
+    private Observable<MovieList> getTodayMovieListObs(){
+
+        DateFormat dateFormat = new SimpleDateFormat("YYYY-MM-dd");
+        Date date = new Date();
+        String strDate = dateFormat.format(date);
+
+        Log.d(TAG, strDate);
+
+        final ApiInterface mApiService = ApiClient.getClient().create(ApiInterface.class);
+
+        return mApiService.RxGetMoviesToday(Constants.API_KEY, strDate, strDate)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    private void ObserveTodayMovies(final Context context, final String title, final int notifId){
+        Observable<MovieList> movieListObservable = getTodayMovieListObs();
+
+        disposable.add(
+          movieListObservable
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableObserver<MovieList>() {
+                    @Override
+                    public void onNext(MovieList movieListObs) {
+                        movieList.setMovieArrayList(movieListObs.getMovieArrayList());
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, e.getMessage());
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d(TAG, "onComplete from RXJava");
+
+                        StringJoiner joiner = new StringJoiner(", ");
+                        for (int i=0; i<movieList.getMovieArrayList().size(); i++)
+                        {
+                            joiner.add(movieList.getMovieArrayList().get(i).getTitle());
+                        }
+                        String fullJoin = joiner.toString();
+                        Log.d(TAG, fullJoin);
+
+                        showAlarmNotification(context, title, fullJoin, notifId);
+                    }
+                })
+        );
+    }
+
+
 }
