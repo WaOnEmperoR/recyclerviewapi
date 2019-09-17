@@ -40,8 +40,6 @@ import io.reactivex.schedulers.Schedulers;
 
 
 public class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
-    private final List<Bitmap> mWidgetItems = new ArrayList<>();
-
     private final Context mContext;
     private CompositeDisposable disposable = new CompositeDisposable();
     private final String TAG = this.getClass().getSimpleName();

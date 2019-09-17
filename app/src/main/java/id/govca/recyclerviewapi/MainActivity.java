@@ -16,6 +16,7 @@ import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 
+import id.govca.recyclerviewapi.alarm.AlarmReceiver;
 import id.govca.recyclerviewapi.fragment.FavoriteMovieFragment;
 import id.govca.recyclerviewapi.fragment.FavoriteTVShowFragment;
 import id.govca.recyclerviewapi.fragment.MovieFragment;
@@ -31,6 +32,10 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.OnF
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        AlarmReceiver alarmReceiver = new AlarmReceiver();
+
+        alarmReceiver.setRepeatingReminderAlarm(this, AlarmReceiver.TYPE_REMINDER, "09:12", "Bukalah Aplikasi Movie Anda");
 
         final TabLayout tabLayout = findViewById(R.id.tabLayout2);
         final ViewPager viewPager = findViewById(R.id.viewPager);
