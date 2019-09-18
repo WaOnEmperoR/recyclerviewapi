@@ -1,5 +1,7 @@
 package id.govca.recyclerviewapi.dao;
 
+import android.database.Cursor;
+
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -19,6 +21,9 @@ public interface DAOAccess {
 
     @Query("SELECT * FROM favorite WHERE type = 0")
     List<Favorite> fetchFavoriteMovies();
+
+    @Query("SELECT * FROM favorite WHERE type = 0")
+    Cursor fetchFavoriteMoviesCursor();
 
     @Query("SELECT * FROM favorite WHERE type = 1")
     List<Favorite> fetchFavoriteTVShows();

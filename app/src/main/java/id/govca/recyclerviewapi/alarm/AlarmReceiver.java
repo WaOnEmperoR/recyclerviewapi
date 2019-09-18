@@ -50,6 +50,8 @@ public class AlarmReceiver extends BroadcastReceiver {
     public static final String TYPE_RELEASE_TODAY = "ReleaseTodayAlarm";
     private CompositeDisposable disposable = new CompositeDisposable();
 
+    private final static String GROUP_NOTIFICATION = "group_movie";
+    private final static int NOTIF_REQUEST_CODE = 200;
     private MovieList movieList = new MovieList();
 
     private final String TAG = this.getClass().getSimpleName();
@@ -81,6 +83,10 @@ public class AlarmReceiver extends BroadcastReceiver {
         String CHANNEL_ID = "Channel_1";
         String CHANNEL_NAME = "AlarmManager channel";
 
+        Intent intent = new Intent(context, AlarmReceiver.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, NOTIF_REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
         NotificationManager notificationManagerCompat = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
@@ -89,6 +95,9 @@ public class AlarmReceiver extends BroadcastReceiver {
                 .setContentText(message)
                 .setColor(ContextCompat.getColor(context, android.R.color.transparent))
                 .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000})
+                .setGroup(GROUP_NOTIFICATION)
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent)
                 .setSound(alarmSound);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -138,7 +147,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             Log.d(TAG, "Not null");
         }
         Toast.makeText(context, "Repeating reminder alarm set up", Toast.LENGTH_SHORT).show();
-        Log.d(TAG, "Repeating reminder alarm set up");
+        Log.d(TAG, "Repeating " + type + " alarm set up");
     }
 
     private String DATE_FORMAT = "yyyy-MM-dd";
@@ -193,15 +202,13 @@ public class AlarmReceiver extends BroadcastReceiver {
                     public void onComplete() {
                         Log.d(TAG, "onComplete from RXJava");
 
-                        StringJoiner joiner = new StringJoiner(", ");
                         for (int i=0; i<movieList.getMovieArrayList().size(); i++)
                         {
-                            joiner.add(movieList.getMovieArrayList().get(i).getTitle());
+                            String release = movieList.getMovieArrayList().get(i).getTitle() + " has been released today!";
+                            Log.d(TAG, release);
+                            showAlarmNotification(context, title, release, i+1);
                         }
-                        String fullJoin = joiner.toString();
-                        Log.d(TAG, fullJoin);
 
-                        showAlarmNotification(context, title, fullJoin, notifId);
                     }
                 })
         );

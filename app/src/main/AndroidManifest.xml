@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="id.govca.recyclerviewapi">
 
+    <permission android:name="id.govca.recyclerviewapi.READ_DATABASE" android:protectionLevel="normal" />
+    <permission android:name="id.govca.recyclerviewapi.WRITE_DATABASE" android:protectionLevel="normal" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".GlobalApplication"
         android:allowBackup="true"
@@ -10,6 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity android:name=".DetailFavoriteActivity" />
 
         <activity android:name=".DetailActivity" />
@@ -41,8 +46,15 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
+
+        <provider
+            android:authorities="id.govca.recyclerviewapi"
+            android:name=".contentprovider.FavoriteProvider"
+            android:exported="true"
+            android:readPermission="id.govca.recyclerviewapi.READ_DATABASE"
+            android:writePermission="id.govca.recyclerviewapi.WRITE_DATABASE" />
     </application>
 
-    <uses-permission android:name="android.permission.INTERNET" />
+
 
 </manifest>
