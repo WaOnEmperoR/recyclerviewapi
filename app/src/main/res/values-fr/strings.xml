@@ -16,4 +16,9 @@
     <string name="title_favorite_tv_show">émission de télévision préférée</string>
     <string name="appwidget_text">exemple</string>
     <string name="empty_text">pas de données</string>
+    <string name="switch_daily">Rappel quotidien</string>
+    <string name="switch_release_today">rappel du film aujourd\'hui</string>
+    <string name="title_set_alarm">régler l\'alarme</string>
+    <string name="title_search_movies">rechercher des films</string>
+    <string name="title_search_tv_shows">rechercher des émissions de télévision</string>
 </resources>

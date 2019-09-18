@@ -154,8 +154,6 @@ public class MovieFragment extends Fragment {
             }
         });
 
-
-
         return view;
     }
 
@@ -224,7 +222,7 @@ public class MovieFragment extends Fragment {
         MenuItem searchItem = menu.findItem(R.id.searchItem);
 
         SearchView searchView = (SearchView) searchItem.getActionView();
-        searchView.setQueryHint("Search Movies");
+        searchView.setQueryHint(getResources().getString(R.string.title_search_movies));
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {

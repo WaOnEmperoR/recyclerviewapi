@@ -83,6 +83,8 @@ public class AlarmReceiver extends BroadcastReceiver {
         String CHANNEL_ID = "Channel_1";
         String CHANNEL_NAME = "AlarmManager channel";
 
+        Log.d(TAG, "Set Notification for : " + String.valueOf(notifId));
+
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, NOTIF_REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -95,7 +97,6 @@ public class AlarmReceiver extends BroadcastReceiver {
                 .setContentText(message)
                 .setColor(ContextCompat.getColor(context, android.R.color.transparent))
                 .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000})
-                .setGroup(GROUP_NOTIFICATION)
                 .setAutoCancel(true)
                 .setContentIntent(pendingIntent)
                 .setSound(alarmSound);
@@ -123,7 +124,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         }
     }
 
-    public void setRepeatingReminderAlarm(Context context, String type, String time, String message) {
+    public void setRepeatingReminderAlarm(Context context, String type, String time, String message, int requestCode) {
         Log.d(TAG, "Set Repeating : " + type);
         if (isDateInvalid(time, TIME_FORMAT)) {
             return;
@@ -141,17 +142,21 @@ public class AlarmReceiver extends BroadcastReceiver {
         calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(timeArray[0]));
         calendar.set(Calendar.MINUTE, Integer.parseInt(timeArray[1]));
         calendar.set(Calendar.SECOND, 0);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, ID_REMINDER, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, 0);
         if (alarmManager != null) {
             alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
-            Log.d(TAG, "Not null");
         }
-        Toast.makeText(context, "Repeating reminder alarm set up", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "Repeating " + type + " alarm set up", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "Repeating " + type + " alarm set up");
     }
 
-    private String DATE_FORMAT = "yyyy-MM-dd";
     private String TIME_FORMAT = "HH:mm";
+
+    public boolean isAlarmSet(Context context, int requestCode) {
+        Intent intent = new Intent(context, AlarmReceiver.class);
+
+        return PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_NO_CREATE) != null;
+    }
 
     public boolean isDateInvalid(String date, String format) {
         try {
@@ -162,6 +167,18 @@ public class AlarmReceiver extends BroadcastReceiver {
         } catch (ParseException e) {
             Log.e(TAG, "Haha " + e.getMessage());
             return true;
+        }
+    }
+
+    public void cancelAlarm(Context context, int requestCode) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(context, AlarmReceiver.class);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestCode, intent, 0);
+        pendingIntent.cancel();
+
+        if (alarmManager != null) {
+            alarmManager.cancel(pendingIntent);
         }
     }
 

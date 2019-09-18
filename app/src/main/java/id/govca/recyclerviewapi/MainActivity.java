@@ -1,20 +1,16 @@
 package id.govca.recyclerviewapi;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.google.android.material.tabs.TabLayout;
-
-import java.util.ArrayList;
 
 import id.govca.recyclerviewapi.alarm.AlarmReceiver;
 import id.govca.recyclerviewapi.fragment.FavoriteMovieFragment;
@@ -22,8 +18,6 @@ import id.govca.recyclerviewapi.fragment.FavoriteTVShowFragment;
 import id.govca.recyclerviewapi.fragment.MovieFragment;
 import id.govca.recyclerviewapi.fragment.TVShowFragment;
 import id.govca.recyclerviewapi.helper.TabsAdapter;
-import id.govca.recyclerviewapi.pojo.Movie;
-import id.govca.recyclerviewapi.viewmodel.FavoriteTVShowListViewModel;
 
 public class MainActivity extends AppCompatActivity implements MovieFragment.OnFragmentInteractionListener, TVShowFragment.OnFragmentInteractionListener, FavoriteMovieFragment.OnFragmentInteractionListener, FavoriteTVShowFragment.OnFragmentInteractionListener {
 
@@ -34,12 +28,7 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.OnF
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        AlarmReceiver alarmReceiver = new AlarmReceiver();
-
-        alarmReceiver.setRepeatingReminderAlarm(this, AlarmReceiver.TYPE_REMINDER, "07:00", "Bukalah Aplikasi Movie Anda");
-        alarmReceiver.setRepeatingReminderAlarm(this, AlarmReceiver.TYPE_RELEASE_TODAY, "08:00", "");
-
-        final TabLayout tabLayout = findViewById(R.id.tabLayout2);
+        final TabLayout tabLayout = findViewById(R.id.tabLayout_movies);
         final ViewPager viewPager = findViewById(R.id.viewPager);
         TabsAdapter tabsAdapter = new TabsAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
 
@@ -82,6 +71,12 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.OnF
             Intent mIntent = new Intent(Settings.ACTION_LOCALE_SETTINGS);
             startActivity(mIntent);
         }
+        else if (item.getItemId() == R.id.action_alarm_settings)
+        {
+            Intent intent = new Intent(this, SetAlarmActivity.class);
+            startActivity(intent);
+        }
+
         return super.onOptionsItemSelected(item);
     }
 }

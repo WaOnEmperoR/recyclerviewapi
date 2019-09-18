@@ -218,7 +218,7 @@ public class TVShowFragment extends Fragment {
         MenuItem searchItem = menu.findItem(R.id.searchItem);
 
         SearchView searchView = (SearchView) searchItem.getActionView();
-        searchView.setQueryHint("Search Movies");
+        searchView.setQueryHint(getResources().getString(R.string.title_search_tv_shows));
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -227,9 +227,6 @@ public class TVShowFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-//                newText = newText.toLowerCase();
-//                listTvShowAdapter.setFilterText(newText);
-
                 if (!newText.isEmpty())
                     tvShowListViewModel.setSearchTVShows(newText, param_lang);
                 else

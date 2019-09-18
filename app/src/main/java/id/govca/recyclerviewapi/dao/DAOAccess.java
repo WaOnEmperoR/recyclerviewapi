@@ -22,7 +22,7 @@ public interface DAOAccess {
     @Query("SELECT * FROM favorite WHERE type = 0")
     List<Favorite> fetchFavoriteMovies();
 
-    @Query("SELECT * FROM favorite WHERE type = 0")
+    @Query("SELECT * FROM favorite")
     Cursor fetchFavoriteMoviesCursor();
 
     @Query("SELECT * FROM favorite WHERE type = 1")

@@ -16,4 +16,9 @@
     <string name="title_favorite_tv_show">Favorite TV Show</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="empty_text">No Data</string>
+    <string name="switch_daily">Daily Reminder</string>
+    <string name="switch_release_today">Today Movie Release Reminder</string>
+    <string name="title_set_alarm">Set Alarm</string>
+    <string name="title_search_movies">Search Movies</string>
+    <string name="title_search_tv_shows">Search TV Shows</string>
 </resources>
