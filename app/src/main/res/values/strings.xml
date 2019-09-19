@@ -17,7 +17,7 @@
     <string name="title_unfavorite">Set as Not Favorite</string>
     <string name="title_favorite_movie">Favorite Movie</string>
     <string name="title_favorite_tv_show">Favorite TV Show</string>
-    <string name="appwidget_text">EXAMPLE</string>
+    <string name="appwidget_text">Movie Widget</string>
     <string name="empty_text">NO DATA</string>
     <string name="switch_daily">Daily Reminder</string>
     <string name="switch_release_today">Today Movie Release Reminder</string>

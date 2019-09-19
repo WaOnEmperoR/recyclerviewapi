@@ -2,8 +2,11 @@ package id.govca.recyclerviewapi.widget;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Binder;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.RemoteViews;
@@ -33,6 +36,11 @@ public class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFa
     private CompositeDisposable disposable = new CompositeDisposable();
     private final Context mContext;
 
+    public static final Uri CONTENT_URI = new Uri.Builder().scheme("content")
+            .authority("id.govca.recyclerviewapi")
+            .appendPath("favorite")
+            .build();
+
     private final String TAG = this.getClass().getSimpleName();
 
     StackRemoteViewsFactory(Context context) {
@@ -46,36 +54,23 @@ public class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFa
 
     @Override
     public void onDataSetChanged() {
-//        getFavoritesObservable();
+        Cursor cursor;
 
-        Bitmap theBitmap = null;
-        try {
-            theBitmap = Glide.
-                    with(mContext).
-                    asBitmap().
-                    load("https://image.tmdb.org/t/p/w150_and_h225_bestv2/eeHI5iBSCOxj4HGSOmFM6azBmwb.jpg").
-                    into(150, 225). // Width and height
-                    get();
-        } catch (ExecutionException e) {
-            Log.e(TAG, e.getMessage());
-        } catch (InterruptedException e) {
-            Log.e(TAG, e.getMessage());
-        }
-        mWidgetItems.add(theBitmap);
+        final long identityToken = Binder.clearCallingIdentity();
 
-        try {
-            theBitmap = Glide.
-                    with(mContext).
-                    asBitmap().
-                    load("https://image.tmdb.org/t/p/w150_and_h225_bestv2/lZMb3R3e5vqukPbeDMeyYGf2ZNG.jpg").
-                    into(150, 225). // Width and height
-                    get();
-        } catch (ExecutionException e) {
-            Log.e(TAG, e.getMessage());
-        } catch (InterruptedException e) {
-            Log.e(TAG, e.getMessage());
+        cursor = mContext.getContentResolver().query(CONTENT_URI, null, null, null, null);
+
+        while (cursor.moveToNext())
+        {
+            String poster_path = cursor.getString(cursor.getColumnIndexOrThrow("poster_path"));
+            String fullPath = Constants.IMAGE_ROOT_SMALL + poster_path;
+
+            Log.d(TAG, fullPath);
+
+            listFavoriteMovies.add(fullPath);
         }
-        mWidgetItems.add(theBitmap);
+
+        Binder.restoreCallingIdentity(identityToken);
     }
 
     @Override
@@ -85,29 +80,27 @@ public class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFa
 
     @Override
     public int getCount() {
-        return mWidgetItems.size();
-//        return listFavoriteMovies.size();
+        return listFavoriteMovies.size();
     }
 
     @Override
     public RemoteViews getViewAt(int position) {
         RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.widget_item);
         Log.d(TAG, "enter " + position);
-//        Bitmap theBitmap = null;
-//        try {
-//            theBitmap = Glide.
-//                    with(mContext).
-//                    asBitmap().
-//                    load(listFavoriteMovies.get(position)).
-//                    into(150, 225). // Width and height
-//                    get();
-//        } catch (ExecutionException e) {
-//            Log.e(TAG, e.getMessage());
-//        } catch (InterruptedException e) {
-//            Log.e(TAG, e.getMessage());
-//        }
-//        rv.setImageViewBitmap(R.id.imageView, theBitmap);
-        rv.setImageViewBitmap(R.id.imageView, mWidgetItems.get(position));
+        Bitmap theBitmap = null;
+        try {
+            theBitmap = Glide.
+                    with(mContext).
+                    asBitmap().
+                    load(listFavoriteMovies.get(position)).
+                    into(150, 225). // Width and height
+                    get();
+        } catch (ExecutionException e) {
+            Log.e(TAG, e.getMessage());
+        } catch (InterruptedException e) {
+            Log.e(TAG, e.getMessage());
+        }
+        rv.setImageViewBitmap(R.id.imageView, theBitmap);
 
         Bundle extras = new Bundle();
         extras.putInt(ImagesBannerWidget.EXTRA_ITEM, position);

@@ -14,7 +14,7 @@
     <string name="title_unfavorite">définir comme pas favori</string>
     <string name="title_favorite_movie">film préféré</string>
     <string name="title_favorite_tv_show">émission de télévision préférée</string>
-    <string name="appwidget_text">exemple</string>
+    <string name="appwidget_text">widget de film</string>
     <string name="empty_text">pas de données</string>
     <string name="switch_daily">Rappel quotidien</string>
     <string name="switch_release_today">rappel du film aujourd\'hui</string>
