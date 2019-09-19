@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="id.govca.recyclerviewapi">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".GlobalApplication"
         android:allowBackup="true"
@@ -37,7 +39,7 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".widget.MovieStackWidget">
+        <receiver android:name=".widget.ImagesBannerWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -59,6 +61,6 @@
         android:name="id.govca.recyclerviewapi.READ_DATABASE"
         android:protectionLevel="normal" />
 
-    <uses-permission android:name="android.permission.INTERNET" />
+
 
 </manifest>
